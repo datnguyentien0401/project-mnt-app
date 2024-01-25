@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import dayjs from "dayjs"
-import { Button, Card, Col, Form, Input, Row, Space, Spin } from "antd"
+import { Button, Card, Col, Form, Input, Row, Space, Spin, notification } from "antd"
 import MainLayout from "@/modules/ui/layout/main-layout"
 import AnnualLeaveTable from "@/modules/plannings/component/annual-leave-table"
 import TotalWorkforceTable from "@/modules/plannings/component/total-workforce-table"
@@ -26,11 +26,12 @@ const Planning = () => {
   const [tableName, setTableName] = useState<string>("")
   const [isFetching, setIsFetching] = useState(false)
   const [projectRemainingList, setProjectRemainingList] = useState<ProjectRemaining[]>([])
-  const [editNameKey, setEditNameKey] = useState("string")
+  const [editNameKey, setEditNameKey] = useState("")
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [reload])
 
   const fetchData = async () => {
     setIsFetching(true)
@@ -39,6 +40,7 @@ const Planning = () => {
     setTableList(tables)
     setProjectRemainingList(projectRemainings)
     setIsFetching(false)
+    setReload(false)
   }
 
   function onSave(tableKey: string) {
@@ -56,20 +58,32 @@ const Planning = () => {
       }
     })
     if (saveTable.id) {
-      updatePlanning(saveTable.id, saveTable).then(res => {
-        if (res) {
-          alert("Save successfully")
-        }
+      updatePlanning(saveTable.id, saveTable)
+    } else {
+      createPlanning(saveTable)
+    }
+    setEditNameKey("")
+    setReload(true)
+
+    notification.open({
+      message: 'Planning',
+      description: 'Save table successfully',
+    });
+  }
+
+  const onRemoveTable = (tableKey: number) => {
+    const removedTable = tableList.find(table => table.key === tableKey)
+    if (removedTable.id) {
+      deletePlanning(removedTable.id).then(() => {
+        setReload(true)
       })
     } else {
-      createPlanning(saveTable).then(res => {
-        if (res) {
-          alert("Save successfully")
-        }
-      })
+      setTableList(tableList.filter(table => table.key !== tableKey))
     }
-    fetchData()
-    setEditNameKey("")
+    notification.open({
+      message: 'Planning',
+      description: 'Remove table successfully',
+    });
   }
 
   const onAddTable = () => {
@@ -156,17 +170,6 @@ const Planning = () => {
         disable: true
       }]
     }
-  }
-
-  const onRemoveTable = (tableKey: number) => {
-    const removedTable = tableList.find(table => table.key === tableKey)
-    if (removedTable.id) {
-      deletePlanning(removedTable.id)
-      fetchData()
-    } else {
-      setTableList(tableList.filter(table => table.key !== tableKey))
-    }
-    alert("Remove successfully")
   }
 
   function updateTables(updatedTable: any) {
