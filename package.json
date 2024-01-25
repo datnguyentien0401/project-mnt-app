@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "cp ./env/dev.env ./.env",
     "dev": "next dev",
     "build": "next build",
+    "dev:prod": "cp ./env/real.env ./.env && next dev",
+    "build:prod": "cp ./env/real.env ./.env && next build",
     "start": "next start",
     "lint": "next lint"
   },
