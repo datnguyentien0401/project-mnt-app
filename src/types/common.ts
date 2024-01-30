@@ -6,6 +6,10 @@ export interface MemberRequest {
   jiraMemberId: string
 }
 
+export interface TeamRequest {
+  name: string
+}
+
 export interface ProjectRemaining {
   epicName: string
   expectedDate: string

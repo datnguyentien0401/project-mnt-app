@@ -1,5 +1,6 @@
 import axios, { HttpStatusCode } from 'axios'
 import AppConfig from '@/config'
+import { TeamRequest } from '@/types/common'
 
 const baseUrl = AppConfig.API_URL
 const teamPath = '/api/v1/teams'
@@ -19,7 +20,7 @@ export const getAllTeams = async () => {
   return response.data
 }
 
-export const createTeam = async (body: { name: string }) => {
+export const createTeam = async (body: TeamRequest) => {
   const response = await axios.post(
     `${baseUrl}${teamPath}`,
     JSON.stringify(body),

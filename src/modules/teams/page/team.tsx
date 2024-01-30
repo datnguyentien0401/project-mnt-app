@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  notification,
-  Row,
-  Select,
-  Space,
-  Spin,
-  Table,
-} from 'antd'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { Col, Form, notification, Row, Spin } from 'antd'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import { createTeam, deleteTeam, getAllTeams } from '@/lib/api/team'
 import { createMember, deleteMember, getAllMembers } from '@/lib/api/member'
-import { MemberRequest } from '@/types/common'
+import { MemberRequest, TeamRequest } from '@/types/common'
+import TeamTable from '@/modules/teams/component/team-table'
+import MemberTable from '@/modules/teams/component/member-table'
 
 const TeamList = () => {
   const [isFetching, setIsFetching] = useState(false)
   const [teams, setTeams] = useState([])
   const [members, setMembers] = useState([])
   const [teamOptions, setTeamOptions] = useState([])
-  const [form] = Form.useForm()
   const [memberForm] = Form.useForm()
 
   useEffect(() => {
@@ -34,9 +23,9 @@ const TeamList = () => {
     const teams = await getAllTeams()
     setTeams(teams)
     setTeamOptions(
-      teams.map((epic: any) => ({
-        value: epic.id,
-        label: epic.name,
+      teams.map((team: any) => ({
+        value: team.id,
+        label: team.name,
       })),
     )
     const members = await getAllMembers()
@@ -47,7 +36,6 @@ const TeamList = () => {
   async function onRemoveTeam(id: number) {
     await deleteTeam(id)
     await fetchData()
-    form.resetFields()
     memberForm.resetFields()
     notification.open({
       message: 'Team',
@@ -65,7 +53,7 @@ const TeamList = () => {
     })
   }
 
-  async function onAddTeam(values: { name: string }) {
+  async function onAddTeam(values: TeamRequest) {
     await createTeam(values)
     await fetchData()
     notification.open({
@@ -89,150 +77,20 @@ const TeamList = () => {
         <Spin spinning={isFetching}>
           <Row gutter={[6, 6]} className={'w-full'}>
             <Col span={8}>
-              <Table
-                bordered
-                pagination={false}
+              <TeamTable
                 dataSource={teams}
-                title={() => (
-                  <Space
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'start',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Form form={form} autoComplete="off" onFinish={onAddTeam}>
-                      <Row gutter={[6, 6]}>
-                        <Col span={20}>
-                          <Form.Item
-                            name="name"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Team is required',
-                              },
-                            ]}
-                          >
-                            <Input type="text" placeholder="Enter team" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={4}>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            icon={<PlusOutlined />}
-                          >
-                            Add
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </Space>
-                )}
-              >
-                <Table.Column title="Id" dataIndex="id" key="id" />
-                <Table.Column title="Team" dataIndex="name" key="name" />
-                <Table.Column
-                  title="-"
-                  render={(text: any, record: any) => (
-                    <Button
-                      icon={<DeleteOutlined />}
-                      onClick={() => onRemoveTeam(record.id)}
-                    />
-                  )}
-                />
-              </Table>
+                onAddTeam={onAddTeam}
+                onRemoveTeam={onRemoveTeam}
+              />
             </Col>
             <Col span={16}>
-              <Table
+              <MemberTable
                 dataSource={members}
-                bordered={true}
-                title={() => (
-                  <Space>
-                    <Form
-                      form={memberForm}
-                      autoComplete="off"
-                      onFinish={onAddMember}
-                    >
-                      <Row gutter={[6, 6]} className={'w-full'}>
-                        <Col span={8}>
-                          <Form.Item
-                            name="name"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Team is required',
-                              },
-                            ]}
-                          >
-                            <Input type="text" placeholder="Member name" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item
-                            name="teamId"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Team is required',
-                              },
-                            ]}
-                          >
-                            <Select
-                              options={teamOptions}
-                              popupClassName="capitalize"
-                              placeholder="Team"
-                              className={'w-full'}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                          <Form.Item
-                            name="jiraMemberId"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Jira ID is required',
-                              },
-                            ]}
-                          >
-                            <Input type="text" placeholder="Jira ID" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={2}>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            icon={<PlusOutlined />}
-                          >
-                            Add
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </Space>
-                )}
-              >
-                <Table.Column
-                  title="Team"
-                  render={(text: string, record: any) => record.team.name}
-                />
-                <Table.Column
-                  title="Jira ID"
-                  dataIndex="jiraMemberId"
-                  key="jiraMemberId"
-                />
-                <Table.Column title="Member" dataIndex="name" key="name" />
-                <Table.Column
-                  title="-"
-                  render={(text: string, record: any) => (
-                    <Button
-                      icon={<DeleteOutlined />}
-                      onClick={() => onRemoveMember(record.id)}
-                    />
-                  )}
-                />
-              </Table>
+                teamOptions={teamOptions}
+                onAddMember={onAddMember}
+                onRemoveMember={onRemoveMember}
+                form={memberForm}
+              />
             </Col>
           </Row>
         </Spin>
