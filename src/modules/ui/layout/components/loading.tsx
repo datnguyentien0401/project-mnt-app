@@ -6,11 +6,11 @@ interface Props {
 }
 
 const Loading = ({ className }: Props) => (
-    <div
-        className={clsx('flex items-center justify-center h-[240px]', className)}
-    >
-      <Spin />
-    </div>
+  <div
+    className={clsx('flex items-center justify-center h-[240px]', className)}
+  >
+    <Spin />
+  </div>
 )
 
 export default Loading

@@ -8,10 +8,7 @@ const useSidebarMenu = () => {
   const router = useRouter()
   const { data: session } = useSession()
 
-  const userMenus: AppMenu[] = useMemo(
-    () => getMenus(),
-    []
-  )
+  const userMenus: AppMenu[] = useMemo(() => getMenus(), [])
 
   const activeMenu = useMemo(() => {
     let flatMenus = allMenus.flatMap((item) => item.children || item)
@@ -28,7 +25,7 @@ const useSidebarMenu = () => {
 
   return {
     menus: userMenus,
-    activeMenu
+    activeMenu,
   }
 }
 

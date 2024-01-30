@@ -1,3 +1,4 @@
+# Project management FE Repository
 ## Development
 
 navigate to the root directory of project
@@ -52,7 +53,7 @@ cd env
 ```bash
 nano real.env
 ```
-edit file real.env
+edit file real.env to config
 ```bash
 NEXT_PUBLIC_APP_URL=your_app_url
 NEXT_PUBLIC_API_URL=your_be_api_url

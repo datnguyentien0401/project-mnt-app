@@ -1,25 +1,25 @@
-import { Card, Col, DatePicker, Form, Row } from "antd"
-import React, { useMemo } from "react"
-import dayjs from "dayjs"
+import { Card, Col, DatePicker, Form, Row } from 'antd'
+import React, { useMemo } from 'react'
+import dayjs from 'dayjs'
 
 const PlanningSearchForm = ({
   fromDate,
   toDate,
   setFromDate,
-  setToDate
+  setToDate,
 }: {
-  fromDate: any,
-  toDate: any,
-  setFromDate: (fromDate: any) => void,
-  setToDate: (fromDate: any) => void,
+  fromDate: any
+  toDate: any
+  setFromDate: (fromDate: any) => void
+  setToDate: (fromDate: any) => void
 }) => {
   const [form] = Form.useForm()
   const initialValues = useMemo(() => {
     return {
       fromDate: fromDate ? dayjs(fromDate) : dayjs(),
-      toDate: toDate ? dayjs(toDate) : dayjs().add(1, "month").endOf("month")
+      toDate: toDate ? dayjs(toDate) : dayjs().add(1, 'month').endOf('month'),
     }
-  }, [])
+  }, [fromDate, toDate])
 
   return (
     <Card className="max-w-full mb-6">
@@ -36,10 +36,13 @@ const PlanningSearchForm = ({
                 className="w-full"
                 allowClear={false}
                 value={fromDate}
-                onChange={value => {
+                onChange={(value) => {
                   if (value) {
                     setFromDate(value)
-                    form.setFieldValue("toDate", value.add(1, "month").endOf("month"))
+                    form.setFieldValue(
+                      'toDate',
+                      value.add(1, 'month').endOf('month'),
+                    )
                   }
                 }}
               />
@@ -50,10 +53,17 @@ const PlanningSearchForm = ({
               <DatePicker
                 className="w-full"
                 allowClear={false}
-                onChange={value => {
+                onChange={(value) => {
                   if (value) {
-                    if (value.isAfter(form.getFieldValue("fromDate").add(1, "month").endOf("month"))) {
-                      alert("Date range is invalid!")
+                    if (
+                      value.isAfter(
+                        form
+                          .getFieldValue('fromDate')
+                          .add(1, 'month')
+                          .endOf('month'),
+                      )
+                    ) {
+                      alert('Date range is invalid!')
                     } else {
                       setToDate(value)
                     }

@@ -1,12 +1,18 @@
-import { type ForwardRefExoticComponent } from "react";
+import { type ForwardRefExoticComponent } from 'react'
+
+export interface MemberRequest {
+  name: string
+  teamId: number
+  jiraMemberId: string
+}
 
 export interface ProjectRemaining {
   epicName: string
   expectedDate: string
-  dueDate: string,
+  dueDate: string
   status: string
-  timeEstimateMM: number,
-  headCount: number,
+  timeEstimateMM: number
+  headCount: number
 }
 
 export interface ProjectStatistic {

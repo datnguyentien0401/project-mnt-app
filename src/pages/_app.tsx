@@ -30,15 +30,15 @@ const antdThemeConfig = {
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter()
   const [queryClient] = useState(
-      () =>
-          new QueryClient({
-            defaultOptions: {
-              queries: {
-                retry: false,
-                refetchOnWindowFocus: false,
-              },
-            },
-          })
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
   )
 
   useEffect(() => {
@@ -57,17 +57,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   }, [router.asPath, router.events])
 
   return (
-      <SessionProvider session={session}>
-        <QueryClientProvider client={queryClient}>
-          <ConfigProvider theme={antdThemeConfig} locale={enUS}>
-            <StyleProvider hashPriority="high">
-              <NiceModal.Provider>
-                <Component {...pageProps} />
-              </NiceModal.Provider>
-            </StyleProvider>
-          </ConfigProvider>
-        </QueryClientProvider>
-      </SessionProvider>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <ConfigProvider theme={antdThemeConfig} locale={enUS}>
+          <StyleProvider hashPriority="high">
+            <NiceModal.Provider>
+              <Component {...pageProps} />
+            </NiceModal.Provider>
+          </StyleProvider>
+        </ConfigProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   )
 }
 

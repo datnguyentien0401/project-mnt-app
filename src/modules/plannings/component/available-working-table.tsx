@@ -1,13 +1,13 @@
-import { Button, Input, InputNumber, Space, Table } from "antd"
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons"
-import React from "react"
-import { v4 as uuidv4 } from "uuid"
-import dayjs from "dayjs"
+import { Button, Input, InputNumber, Space, Table } from 'antd'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import React from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
 
 interface WorkingWeek {
-  key: string,
-  year: number,
-  week: string,
+  key: string
+  year: number
+  week: string
 }
 
 const AvailableWorkingTable = ({
@@ -16,69 +16,102 @@ const AvailableWorkingTable = ({
   toDate,
   setAvailableWorkingData,
 }: {
-  data: any[],
-  fromDate: any,
-  toDate: any,
-  setAvailableWorkingData: (data: any[], columns: any[]) => void,
+  data: any[]
+  fromDate: any
+  toDate: any
+  setAvailableWorkingData: (data: any[], columns: any[]) => void
 }) => {
   const columns: any[] = [
     {
-      title: "Team",
-      key: "team",
-      dataIndex: "team",
-      fixed: "left",
-      render: (text: any, record: any) => (
-        record.disable ? text : <Input placeholder="Member name" value={text}
-                                       onChange={event => onChange("team", record.id, event.target.value)} />
-      )
+      title: 'Team',
+      key: 'team',
+      dataIndex: 'team',
+      fixed: 'left',
+      render: (text: any, record: any) =>
+        record.disable ? (
+          text
+        ) : (
+          <Input
+            placeholder="Member name"
+            value={text}
+            onChange={(event) =>
+              onChange('team', record.id, event.target.value)
+            }
+          />
+        ),
     },
     ...getWorkingWeeksInMonth(fromDate, false).map((workingWeek) => {
       return {
-        title: workingWeek.year + " " + workingWeek.week,
+        title: workingWeek.year + ' ' + workingWeek.week,
         key: workingWeek.key,
         dataIndex: workingWeek.key,
         render: (text: any, record: any) => {
-          return record.disable ? text : (
-            <InputNumber value={text} defaultValue={0} min={0}
-                         onChange={event => onChange(workingWeek.key, record.id, event ?? 0)} />
+          return record.disable ? (
+            text
+          ) : (
+            <InputNumber
+              value={text}
+              defaultValue={0}
+              min={0}
+              onChange={(event) =>
+                onChange(workingWeek.key, record.id, event ?? 0)
+              }
+            />
           )
-        }
+        },
       }
     }),
     {
-      title: `Total ${fromDate.format("YYYY/MM")}`,
-      key: `total${fromDate.format("YYYYMM")}`,
-      dataIndex: `total${fromDate.format("YYYYMM")}`
+      title: `Total ${fromDate.format('YYYY/MM')}`,
+      key: `total${fromDate.format('YYYYMM')}`,
+      dataIndex: `total${fromDate.format('YYYYMM')}`,
     },
     ...getWorkingWeeksInMonth(toDate, true).map((workingWeek) => {
       return {
-        title: workingWeek.year + " " + workingWeek.week,
+        title: workingWeek.year + ' ' + workingWeek.week,
         key: workingWeek.key,
         dataIndex: workingWeek.key,
         render: (text: any, record: any) => {
-          return record.disable ? text : (
-            <InputNumber value={text} defaultValue={0} min={0}
-                         onChange={event => onChange(workingWeek.key, record.id, event ?? 0)} />
+          return record.disable ? (
+            text
+          ) : (
+            <InputNumber
+              value={text}
+              defaultValue={0}
+              min={0}
+              onChange={(event) =>
+                onChange(workingWeek.key, record.id, event ?? 0)
+              }
+            />
           )
-        }
+        },
       }
     }),
     {
-      title: `Total ${toDate.format("YYYY/MM")}`,
-      key: `total${toDate.format("YYYYMM")}`,
-      dataIndex: `total${toDate.format("YYYYMM")}`
+      title: `Total ${toDate.format('YYYY/MM')}`,
+      key: `total${toDate.format('YYYYMM')}`,
+      dataIndex: `total${toDate.format('YYYYMM')}`,
     },
     {
-      title: "-",
-      key: "action",
-      dataIndex: "action",
-      render: (text: any, record: any) => (
-        record.disable ? "" : <Button icon={<DeleteOutlined />} onClick={() => onRemoveRow(record.id)} />
-      )
-    }
+      title: '-',
+      key: 'action',
+      dataIndex: 'action',
+      render: (text: any, record: any) =>
+        record.disable ? (
+          ''
+        ) : (
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => onRemoveRow(record.id)}
+          />
+        ),
+    },
   ]
 
-  function getWorkingWeeksInMonth(dateInput: any, isStartMonth: boolean): WorkingWeek[] {
+  function getWorkingWeeksInMonth(
+    dateInput: any,
+    isStartMonth: boolean,
+  ): WorkingWeek[] {
     const workingWeeks = []
     const monday = new Date(dateInput)
     const friday = new Date(monday)
@@ -89,7 +122,7 @@ const AvailableWorkingTable = ({
         friday.setDate(friday.getDate() + 1)
       }
       workingWeeks.push(getWorkingWeek(monday, friday))
-      if (dayjs(friday).format("YYYYMM") > dayjs(monday).format("YYYYMM")) {
+      if (dayjs(friday).format('YYYYMM') > dayjs(monday).format('YYYYMM')) {
         return workingWeeks
       }
       monday.setDate(friday.getDate() + 3)
@@ -99,7 +132,9 @@ const AvailableWorkingTable = ({
       monday.setDate(monday.getDate() + 1)
     }
 
-    while (dayjs(monday).format("YYYYMM") <= dayjs(dateInput).format("YYYYMM")) {
+    while (
+      dayjs(monday).format('YYYYMM') <= dayjs(dateInput).format('YYYYMM')
+    ) {
       friday.setDate(monday.getDate() + 4)
       workingWeeks.push(getWorkingWeek(monday, friday))
       monday.setDate(monday.getDate() + 7)
@@ -109,19 +144,24 @@ const AvailableWorkingTable = ({
 
   function getWorkingWeek(monday: Date, friday: Date): WorkingWeek {
     return {
-      key: dayjs(monday.toLocaleDateString()).format("YYYYMMDD") + dayjs(friday.toLocaleDateString()).format("YYYYMMDD"),
+      key:
+        dayjs(monday.toLocaleDateString()).format('YYYYMMDD') +
+        dayjs(friday.toLocaleDateString()).format('YYYYMMDD'),
       year: monday.getFullYear(),
-      week: dayjs(monday.toLocaleDateString()).format("DD/MM") + "-" + dayjs(friday.toLocaleDateString()).format("DD/MM")
+      week:
+        dayjs(monday.toLocaleDateString()).format('DD/MM') +
+        '-' +
+        dayjs(friday.toLocaleDateString()).format('DD/MM'),
     }
   }
 
   function onChange(columnKey: string, rowId: string, value: any) {
-    const updatedDataSource = data.map(item => {
+    const updatedDataSource = data.map((item) => {
       if (item.id !== rowId) {
         return item
       }
       item[columnKey] = value
-      if (columnKey.startsWith("total") || columnKey.startsWith("team")) {
+      if (columnKey.startsWith('total') || columnKey.startsWith('team')) {
         return item
       }
       const month = columnKey.toString().substring(0, 6)
@@ -138,10 +178,10 @@ const AvailableWorkingTable = ({
 
   const onAddRow = () => {
     const newRow = columns.reduce((row: any, column: any) => {
-      if (column.key.startsWith("team")) {
+      if (column.key.startsWith('team')) {
         return row
       }
-      if (!column.key.startsWith("total")) {
+      if (!column.key.startsWith('total')) {
         row[column.key] = 4.5
         return row
       }
@@ -159,7 +199,10 @@ const AvailableWorkingTable = ({
   }
 
   function onRemoveRow(rowId: string) {
-    setAvailableWorkingData(data.filter(row => row.id !== rowId), columns)
+    setAvailableWorkingData(
+      data.filter((row) => row.id !== rowId),
+      columns,
+    )
   }
 
   return (
@@ -168,7 +211,7 @@ const AvailableWorkingTable = ({
       columns={columns}
       pagination={false}
       dataSource={data}
-      title={() =>
+      title={() => (
         <Space className="w-full justify-end">
           <Button
             onClick={onAddRow}
@@ -176,9 +219,10 @@ const AvailableWorkingTable = ({
             icon={<PlusOutlined />}
             className="align-left"
           />
-        </Space>}
-      scroll={{ x: "max-content" }}>
-    </Table>
+        </Space>
+      )}
+      scroll={{ x: 'max-content' }}
+    ></Table>
   )
 }
 

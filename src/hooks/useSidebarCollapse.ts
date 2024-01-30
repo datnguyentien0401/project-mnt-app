@@ -11,7 +11,7 @@ const useSidebarCollapse = () => {
 
   return {
     isCollapsed,
-    toggleSidebar
+    toggleSidebar,
   }
 }
 

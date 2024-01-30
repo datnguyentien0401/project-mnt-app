@@ -14,49 +14,48 @@ class MyDocument extends Document {
     const originalRenderPage = ctx.renderPage
 
     ctx.renderPage = () =>
-        originalRenderPage({
-          // eslint-disable-next-line react/display-name
-          enhanceApp: (App) => (props) =>
-              (
-                  <StyleProvider cache={cache}>
-                    <App {...props} />
-                  </StyleProvider>
-              ),
-        })
+      originalRenderPage({
+        // eslint-disable-next-line react/display-name
+        enhanceApp: (App) => (props) => (
+          <StyleProvider cache={cache}>
+            <App {...props} />
+          </StyleProvider>
+        ),
+      })
 
     const initialProps = await Document.getInitialProps(ctx)
     return {
       ...initialProps,
       styles: (
-          <>
-            {initialProps.styles}
-            <style
-                data-test="extract"
-                dangerouslySetInnerHTML={{ __html: extractStyle(cache) }}
-            />
-          </>
+        <>
+          {initialProps.styles}
+          <style
+            data-test="extract"
+            dangerouslySetInnerHTML={{ __html: extractStyle(cache) }}
+          />
+        </>
       ),
     }
   }
 
   render() {
     return (
-        <Html lang="en">
-          <Head>
-            <link
-                rel="icon"
-                href="https://developers.line.biz/assets/icon/favicon.ico"
-            />
-            <link
-                rel="shortcut icon"
-                href="https://developers.line.biz/assets/icon/favicon.ico"
-            />
-          </Head>
-          <body>
+      <Html lang="en">
+        <Head>
+          <link
+            rel="icon"
+            href="https://developers.line.biz/assets/icon/favicon.ico"
+          />
+          <link
+            rel="shortcut icon"
+            href="https://developers.line.biz/assets/icon/favicon.ico"
+          />
+        </Head>
+        <body>
           <Main />
           <NextScript />
-          </body>
-        </Html>
+        </body>
+      </Html>
     )
   }
 }

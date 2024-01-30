@@ -1,25 +1,32 @@
 import {
   LineChartOutlined,
-  ProjectOutlined, SnippetsOutlined
-} from "@ant-design/icons"
-import { AppMenu } from "@/types/common";
+  ProjectOutlined,
+  SnippetsOutlined,
+  TeamOutlined,
+} from '@ant-design/icons'
+import { AppMenu } from '@/types/common'
 
 export const allMenus: AppMenu[] = [
   {
     label: 'Project',
     icon: ProjectOutlined,
-    href: '/projects'
+    href: '/projects',
   },
   {
     label: 'Planning',
     icon: LineChartOutlined,
-    href: '/planning'
+    href: '/planning',
   },
   {
     label: 'Project planning',
     icon: SnippetsOutlined,
-    href: '/project-planning'
-  }
+    href: '/project-planning',
+  },
+  {
+    label: 'Team management',
+    icon: TeamOutlined,
+    href: '/teams',
+  },
 ]
 
 export const getMenus = () => {
@@ -46,12 +53,12 @@ export const getMenus = () => {
                 return {
                   ...nestedItem,
                   children: nestedItem.children.filter((nestedChild) =>
-                    filterItem(nestedChild)
-                  )
+                    filterItem(nestedChild),
+                  ),
                 }
               }
               return nestedItem
-            })
+            }),
         }
       }
 
