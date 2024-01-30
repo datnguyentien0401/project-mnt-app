@@ -6,7 +6,6 @@ interface Props {
   initialValues: Record<string, any>
   projectOptions: any[]
   onSubmit: (values: Record<string, any>) => void
-  // eslint-disable-next-line @typescript-eslint/ban-types
   callback: Function
 }
 
