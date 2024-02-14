@@ -1,4 +1,5 @@
 import axios, { HttpStatusCode } from 'axios'
+import dayjs, { Dayjs } from 'dayjs'
 import AppConfig from '@/config'
 import { TeamRequest } from '@/types/common'
 
@@ -38,4 +39,18 @@ export const deleteTeam = async (id: number) => {
   if (response.status !== HttpStatusCode.Ok) {
     console.error('Error delete data:', response)
   }
+}
+
+export const getOverall = async (fromDate: Date, toDate: Date) => {
+  const response = await axios.get(`${baseUrl}${teamPath}/overall`, {
+    params: {
+      fromDate: dayjs(fromDate).format('YYYYMMDD'),
+      toDate: dayjs(toDate).format('YYYYMMDD'),
+    },
+  })
+  if (response.status !== HttpStatusCode.Ok) {
+    console.error('Error fetching data:', response)
+    return []
+  }
+  return response.data
 }

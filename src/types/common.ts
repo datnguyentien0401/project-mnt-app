@@ -10,6 +10,12 @@ export interface TeamRequest {
   name: string
 }
 
+export enum Term {
+  HALF_1,
+  HALF_2,
+  FULL,
+}
+
 export interface ProjectRemaining {
   epicName: string
   expectedDate: string
