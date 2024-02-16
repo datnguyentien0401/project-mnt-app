@@ -17,6 +17,7 @@ RUN npm run build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
+ARG BUILD_ENV=real
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -27,11 +28,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
+COPY --chown=nextjs:nodejs env/${BUILD_ENV}.env ./.env
+
 USER nextjs
 
 EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
 
