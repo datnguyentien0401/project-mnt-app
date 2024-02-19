@@ -11,5 +11,4 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - BUILD_ENV=real
+      - APP_ENV=real
