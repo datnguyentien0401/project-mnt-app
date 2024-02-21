@@ -3,7 +3,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --production
+RUN yarn install
 
 FROM node:18-alpine AS builder
 WORKDIR /app
@@ -14,7 +14,7 @@ ENV APP_ENV real
 COPY --chown=nextjs:nodejs env/$APP_ENV.env ./.env
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npm run build
+RUN yarn build
 
 FROM node:18-alpine AS runner
 WORKDIR /app
@@ -40,5 +40,5 @@ ENV PORT 3000
 
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
 
