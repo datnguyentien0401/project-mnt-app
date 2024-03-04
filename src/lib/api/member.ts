@@ -11,6 +11,15 @@ const headers = {
   },
 }
 
+export const getAllMembersByTeamId = async (teamId: number) => {
+  const response = await axios.get(`${baseUrl}${teamPath}/team/${teamId}`)
+  if (response.status != HttpStatusCode.Ok) {
+    console.error('Error fetching data:', response)
+    return []
+  }
+  return response.data
+}
+
 export const getAllMembers = async () => {
   const response = await axios.get(`${baseUrl}${teamPath}`)
   if (response.status != HttpStatusCode.Ok) {

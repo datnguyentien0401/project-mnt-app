@@ -42,14 +42,8 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link
-            rel="icon"
-            href="https://developers.line.biz/assets/icon/favicon.ico"
-          />
-          <link
-            rel="shortcut icon"
-            href="https://developers.line.biz/assets/icon/favicon.ico"
-          />
+          <link rel="icon" href="/logo.jpg" />
+          <link rel="shortcut icon" href="/logo.jpg" />
         </Head>
         <body>
           <Main />

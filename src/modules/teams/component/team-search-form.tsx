@@ -9,10 +9,26 @@ const TeamForm = ({
 }: {
   initialValues?: Record<string, any>
   teamOptions?: any[]
-  onSubmit: (values: Record<string, any>) => void
+  onSubmit: (fromDate: Date, toDate: Date, teamId: number) => void
 }) => {
   const [form] = Form.useForm()
+  function onSearch(values: Record<string, any>) {
+    const fromDate = new Date(values.year)
+    const toDate = new Date(values.year)
 
+    //month based index = 0
+    if (values.term === Term.HALF_1) {
+      fromDate.setMonth(0, 1)
+      toDate.setMonth(5, 30)
+    } else if (values.term === Term.HALF_2) {
+      fromDate.setMonth(6, 1)
+      toDate.setMonth(11, 31)
+    } else if (values.term === Term.FULL) {
+      fromDate.setMonth(0, 1)
+      toDate.setMonth(11, 31)
+    }
+    onSubmit(fromDate, toDate, values.team)
+  }
   return (
     <Card className="max-w-full mb-6">
       <Form
@@ -20,7 +36,7 @@ const TeamForm = ({
         layout="vertical"
         autoComplete="off"
         initialValues={initialValues}
-        onFinish={onSubmit}
+        onFinish={onSearch}
       >
         <Row gutter={[24, 8]}>
           {teamOptions && (

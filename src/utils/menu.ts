@@ -1,5 +1,6 @@
 import {
   BarChartOutlined,
+  FundOutlined,
   LineChartOutlined,
   ProjectOutlined,
   SnippetsOutlined,
@@ -27,6 +28,11 @@ export const allMenus: AppMenu[] = [
     label: 'Team management',
     icon: TeamOutlined,
     href: '/teams',
+  },
+  {
+    label: 'Team view',
+    icon: FundOutlined,
+    href: '/team-view',
   },
   {
     label: 'Overall review',

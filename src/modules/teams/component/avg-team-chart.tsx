@@ -10,7 +10,7 @@ import {
 } from 'recharts'
 import { Space, Typography } from 'antd'
 
-const { Title, Text } = Typography
+const { Title } = Typography
 const AvgTeamChart = ({ data }: { data: any[] }) => {
   return (
     <>

@@ -58,21 +58,7 @@ const OverallTeam = () => {
     }
   })
 
-  async function onSearch(values: Record<string, any>) {
-    const fromDate = new Date(values.year)
-    const toDate = new Date(values.year)
-
-    //month based index = 0
-    if (values.term === Term.HALF_1) {
-      fromDate.setMonth(0, 1)
-      toDate.setMonth(5, 30)
-    } else if (values.term === Term.HALF_2) {
-      fromDate.setMonth(6, 1)
-      toDate.setMonth(11, 31)
-    } else if (values.term === Term.FULL) {
-      fromDate.setMonth(0, 1)
-      toDate.setMonth(11, 31)
-    }
+  async function onSearch(fromDate: Date, toDate: Date) {
     setIsFetching(true)
     const data = await getOverall(fromDate, toDate)
     setIsFetching(false)
@@ -81,9 +67,11 @@ const OverallTeam = () => {
 
   return (
     <>
-      <MainLayout headerName="Team management">
+      <MainLayout headerName="Team Overall">
         <Spin spinning={isFetching}>
-          <TeamForm onSubmit={(values) => onSearch(values)} />
+          <TeamForm
+            onSubmit={(fromDate, toDate) => onSearch(fromDate, toDate)}
+          />
           <Row gutter={[12, 12]} className={'w-full'}>
             <Col span={12}>
               <OverallTeamChart data={overTeamData} />

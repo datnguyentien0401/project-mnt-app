@@ -54,3 +54,16 @@ export const getOverall = async (fromDate: Date, toDate: Date) => {
   }
   return response.data
 }
+
+export const getTeamView = async (
+  teamId: number,
+  fromDate: Date,
+  toDate: Date,
+) => {
+  return await axios.get(`${baseUrl}/api/v1/teams/${teamId}/team-view`, {
+    params: {
+      fromDate: dayjs(fromDate).format('YYYYMMDD'),
+      toDate: dayjs(toDate).format('YYYYMMDD'),
+    },
+  })
+}
