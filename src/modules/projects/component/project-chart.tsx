@@ -1,4 +1,4 @@
-import { Card, Col, Row } from 'antd'
+import { Card, Col, Row, Space, Typography } from 'antd'
 import React from 'react'
 import {
   Bar,
@@ -14,6 +14,8 @@ import {
 } from 'recharts'
 import { ProjectStatistic } from '@/types/common'
 import { randomColor } from '@/utils/helper'
+
+const { Title } = Typography
 
 const barChartLegend = [
   {
@@ -79,70 +81,70 @@ const ProjectLineChart = ({
   return (
     <Row gutter={[16, 16]} className="my-6">
       <Col span={12}>
-        <Card title="Project Chart">
-          <LineChart
-            width={700}
-            height={500}
-            data={formattedChartData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" padding={{ left: 70 }} />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {projectIds.map((projectId, index) => (
-              <Line
-                key={index}
-                type="monotone"
-                dataKey={`${projectId}.${lineChartType}`}
-                name={projectNameById.get(projectId)}
-                stroke={randomColor()}
-              >
-                <LabelList position="top" />
-              </Line>
-            ))}
-          </LineChart>
-        </Card>
+        <Space className="w-full justify-center">
+          <Title level={3}>Project chart</Title>
+        </Space>
+        <LineChart
+          width={700}
+          height={1000}
+          data={formattedChartData}
+          margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" padding={{ left: 70 }} />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {projectIds.map((projectId, index) => (
+            <Line
+              key={index}
+              type="monotone"
+              dataKey={`${projectId}.${lineChartType}`}
+              name={projectNameById.get(projectId)}
+              stroke={randomColor()}
+            >
+              <LabelList position="top" />
+            </Line>
+          ))}
+        </LineChart>
       </Col>
       <Col span={12}>
-        <Card title="Issues Chart">
-          <BarChart
-            width={700}
-            height={500}
-            data={formattedColumnChartData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend payload={barChartLegend} />
-            {projectIds.map((projectId) =>
-              barChartLegend.map((issueType) => (
-                <Bar
-                  key={`${projectId}.${issueType.id}`}
+        <Space className="w-full justify-center">
+          <Title level={3}>Issue chart</Title>
+        </Space>
+        <BarChart
+          width={700}
+          height={1000}
+          data={formattedColumnChartData}
+          margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Legend payload={barChartLegend} />
+          {projectIds.map((projectId) =>
+            barChartLegend.map((issueType) => (
+              <Bar
+                key={`${projectId}.${issueType.id}`}
+                dataKey={`${projectId}.${issueType.id}`}
+                name={`${projectNameById.get(projectId)} - ${issueType.value}`}
+                stackId={projectId}
+                fill={issueType.color}
+                barSize={30}
+              >
+                <LabelList
+                  position="inside"
                   dataKey={`${projectId}.${issueType.id}`}
-                  name={`${projectNameById.get(projectId)} - ${
-                    issueType.value
-                  }`}
-                  stackId={projectId}
-                  fill={issueType.color}
-                  barSize={30}
-                >
-                  <LabelList
-                    position="inside"
-                    dataKey={`${projectId}.${issueType.id}`}
-                    formatter={(label: number) => {
-                      return label ? label : null
-                    }}
-                    style={{ fill: '#fff', fontSize: 12 }}
-                  />
-                </Bar>
-              )),
-            )}
-          </BarChart>
-        </Card>
+                  formatter={(label: number) => {
+                    return label ? label : null
+                  }}
+                  style={{ fill: '#fff', fontSize: 12 }}
+                />
+              </Bar>
+            )),
+          )}
+        </BarChart>
       </Col>
     </Row>
   )
