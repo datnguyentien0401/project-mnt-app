@@ -11,36 +11,7 @@ import { getOverall } from '@/lib/api/team'
 
 const OverallTeam = () => {
   const [isFetching, setIsFetching] = useState(false)
-  const [data, setData] = useState<any[]>([
-    {
-      team: 'A',
-      totalResolvedIssue: 10,
-      avgResolvedIssue: 9,
-      avgTimeSpent: 20,
-      avgStoryPoint: 10,
-    },
-    {
-      team: 'B',
-      totalResolvedIssue: 25,
-      avgResolvedIssue: 7,
-      avgTimeSpent: 22,
-      avgStoryPoint: 12,
-    },
-    {
-      team: 'C',
-      totalResolvedIssue: 45,
-      avgResolvedIssue: 8,
-      avgTimeSpent: 23,
-      avgStoryPoint: 11,
-    },
-    {
-      team: 'D',
-      totalResolvedIssue: 30,
-      avgResolvedIssue: 9,
-      avgTimeSpent: 25,
-      avgStoryPoint: 13,
-    },
-  ])
+  const [data, setData] = useState<any[]>([])
 
   const totalResolveIssueAllTeam = data.reduce(
     (totalResolveIssueAllTeam, item) => {
@@ -50,7 +21,7 @@ const OverallTeam = () => {
     0,
   )
 
-  const overTeamData = data.map((item) => {
+  const resolvedIssueData = data.map((item) => {
     return {
       ...item,
       resolvedIssuePercentage:
@@ -72,22 +43,26 @@ const OverallTeam = () => {
           <TeamForm
             onSubmit={(fromDate, toDate) => onSearch(fromDate, toDate)}
           />
-          <Row gutter={[12, 12]} className={'w-full'}>
-            <Col span={12}>
-              <OverallTeamChart data={overTeamData} />
-            </Col>
-            <Col span={12}>
-              <AvgTeamChart data={data} />
-            </Col>
-          </Row>
-          <Row gutter={[6, 6]} className={'w-full pt-5'}>
-            <Col span={12}>
-              <OverallTeamTable dataSource={overTeamData} />
-            </Col>
-            <Col span={12}>
-              <AvgTeamTable dataSource={data} />
-            </Col>
-          </Row>
+          {data.length > 0 && (
+            <>
+              <Row gutter={[12, 12]} className={'w-full'}>
+                <Col span={12}>
+                  <OverallTeamChart data={resolvedIssueData} />
+                </Col>
+                <Col span={12}>
+                  <AvgTeamChart data={data} />
+                </Col>
+              </Row>
+              <Row gutter={[6, 6]} className={'w-full pt-5'}>
+                <Col span={12}>
+                  <OverallTeamTable dataSource={resolvedIssueData} />
+                </Col>
+                <Col span={12}>
+                  <AvgTeamTable dataSource={data} />
+                </Col>
+              </Row>
+            </>
+          )}
         </Spin>
       </MainLayout>
     </>
