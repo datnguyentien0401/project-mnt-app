@@ -256,9 +256,9 @@ const Planning = () => {
         .al || 0
     const updatedTotalWorkforceData = [
       {
-        md: (totalMM * 20).toFixed(2),
-        mm: totalMM.toFixed(2),
-        excludeAL: (totalMM - totalAL).toFixed(2),
+        md: (totalMM * 20).toFixed(1),
+        mm: totalMM.toFixed(1),
+        excludeAL: (totalMM - totalAL).toFixed(1),
       },
     ]
 
@@ -280,7 +280,7 @@ const Planning = () => {
         if (item.team === 'Total AL (MM)') {
           return {
             ...item,
-            al: (total / 20).toFixed(2),
+            al: (total / 20).toFixed(1),
           }
         }
         return {
@@ -295,7 +295,7 @@ const Planning = () => {
       {
         ...table.totalWorkforceData[0],
         excludeAL: ((table.totalWorkforceData[0].mm || 0) - total / 20).toFixed(
-          2,
+          1,
         ),
       },
     ]
