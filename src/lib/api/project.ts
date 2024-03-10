@@ -3,9 +3,13 @@ import AppConfig from '@/config'
 
 const baseUrl = AppConfig.API_URL
 
-export const getAllEpic = async (groupEpic: boolean = true) => {
+export const getAllEpic = async (
+  projectName: string,
+  groupEpic: boolean = true,
+) => {
   const response = await axios.get(`${baseUrl}/api/v1/projects/epic`, {
     params: {
+      projectName: projectName,
       groupEpic: groupEpic,
     },
   })
@@ -13,7 +17,7 @@ export const getAllEpic = async (groupEpic: boolean = true) => {
     console.error('Error fetching data:', response)
     return []
   }
-  return response.data
+  return response
 }
 
 export const searchProject = async (
