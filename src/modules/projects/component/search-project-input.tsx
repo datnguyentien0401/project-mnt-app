@@ -42,6 +42,7 @@ const SearchProjectInput: React.FC<{
   placeholder?: string
   style?: React.CSSProperties
   defaultOptions?: SelectProps['options']
+  mode?: 'multiple' | 'tags'
 }> = ({
   disabled,
   value,
@@ -50,6 +51,7 @@ const SearchProjectInput: React.FC<{
   style,
   onSelect,
   defaultOptions,
+  mode,
 }) => {
   const [data, setData] = useState<SelectProps['options']>(defaultOptions)
 
@@ -80,7 +82,6 @@ const SearchProjectInput: React.FC<{
 
   return (
     <Select
-      className={'w-full'}
       showSearch
       value={value}
       placeholder={placeholder}
@@ -91,7 +92,7 @@ const SearchProjectInput: React.FC<{
       filterOption={false}
       onSearch={handleSearch}
       onChange={handleChange}
-      mode={'multiple'}
+      mode={mode}
       notFoundContent={null}
       options={(data || []).map((d) => ({
         value: d.value,

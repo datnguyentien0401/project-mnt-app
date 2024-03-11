@@ -36,7 +36,7 @@ const ProjectForm: FC<Props> = ({
               {/*   popupClassName="capitalize" */}
               {/*   placeholder="Project" */}
               {/* /> */}
-              <SearchProjectInput placeholder="Project" />
+              <SearchProjectInput placeholder="Project" mode={'multiple'} />
             </Form.Item>
           </Col>
           <Col style={{ width: '25%' }} flex="none">
