@@ -1,18 +1,17 @@
 import { Button, DatePicker, Select, Form, Row, Col, Card } from 'antd'
 import { type FC } from 'react'
 import { SearchOutlined } from '@ant-design/icons'
-import SearchProjectInput from '@/modules/projects/component/search-project-input'
 
 interface Props {
   initialValues: Record<string, any>
-  // projectOptions: any[]
+  projectOptions: any[]
   onSubmit: (values: Record<string, any>) => void
   callback: Function
 }
 
 const ProjectForm: FC<Props> = ({
   initialValues,
-  // projectOptions,
+  projectOptions,
   onSubmit,
   callback,
 }) => {
@@ -30,13 +29,15 @@ const ProjectForm: FC<Props> = ({
         <Row gutter={[24, 8]}>
           <Col style={{ width: '25%' }} flex="none">
             <Form.Item name="projectId" label="Project">
-              {/* <Select */}
-              {/*   options={projectOptions} */}
-              {/*   mode="multiple" */}
-              {/*   popupClassName="capitalize" */}
-              {/*   placeholder="Project" */}
-              {/* /> */}
-              <SearchProjectInput placeholder="Project" mode={'multiple'} />
+              <Select
+                options={projectOptions}
+                mode="multiple"
+                popupClassName="capitalize"
+                placeholder="Project"
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().includes(input)
+                }
+              />
             </Form.Item>
           </Col>
           <Col style={{ width: '25%' }} flex="none">

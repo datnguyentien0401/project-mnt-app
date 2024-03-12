@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import { getAllEpic, getProjectRemaining } from '@/lib/api/project'
 import { ProjectRemaining } from '@/types/common'
-import SearchProjectInput from '@/modules/projects/component/search-project-input'
 
 const ProjectPlanning = () => {
   const [dataSource, setDataSource] = useState<any[]>([])
@@ -12,21 +11,21 @@ const ProjectPlanning = () => {
   const [projectOptions, setProjectOptions] = useState<any[]>([])
   const [isFetching, setIsFetching] = useState(false)
 
-  // useEffect(() => {
-  //   fetchProjectOptions()
-  // }, [])
-  //
-  // const fetchProjectOptions = async () => {
-  //   setIsFetching(true)
-  //   const data = await getAllEpic(false)
-  //   setProjectOptions(
-  //     data.map((epic: any) => ({
-  //       value: epic.projectId,
-  //       label: epic.projectName,
-  //     })),
-  //   )
-  //   setIsFetching(false)
-  // }
+  useEffect(() => {
+    fetchProjectOptions()
+  }, [])
+
+  const fetchProjectOptions = async () => {
+    setIsFetching(true)
+    const data = await getAllEpic('', false)
+    setProjectOptions(
+      data.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      })),
+    )
+    setIsFetching(false)
+  }
 
   const onChangeProject = async (projectId: string) => {
     setIsFetching(true)
@@ -286,17 +285,15 @@ const ProjectPlanning = () => {
       <MainLayout headerName="Project Planning">
         <Spin spinning={isFetching}>
           <Space style={{ marginBottom: '10px' }}>
-            {/* <Select */}
-            {/*   options={projectOptions} */}
-            {/*   popupClassName="capitalize" */}
-            {/*   placeholder="Project" */}
-            {/*   style={{ width: '200px' }} */}
-            {/*   onChange={(value) => onChangeProject(value)} */}
-            {/* /> */}
-            <SearchProjectInput
+            <Select
+              options={projectOptions}
+              popupClassName="capitalize"
               placeholder="Project"
               style={{ width: 300 }}
               onChange={(value) => onChangeProject(value)}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().includes(input)
+              }
             />
           </Space>
           <Table

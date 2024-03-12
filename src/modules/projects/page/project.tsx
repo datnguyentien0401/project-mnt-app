@@ -34,20 +34,20 @@ const ProjectList = () => {
       initialValues.fromDate,
       initialValues.toDate,
     )
-    // await fetchProjectOptions()
+    await fetchProjectOptions()
   }
 
-  // const fetchProjectOptions = async () => {
-  //   setIsFetching(true)
-  //   const data = await getAllEpic()
-  //   setProjectOptions(
-  //     data.map((epic: any) => ({
-  //       value: epic.projectId,
-  //       label: epic.projectName,
-  //     })),
-  //   )
-  //   setIsFetching(false)
-  // }
+  const fetchProjectOptions = async () => {
+    setIsFetching(true)
+    const data = await getAllEpic()
+    setProjectOptions(
+      data.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      })),
+    )
+    setIsFetching(false)
+  }
 
   const fetchProjectStatistic = async (
     projectIds: string[],
@@ -81,6 +81,7 @@ const ProjectList = () => {
             initialValues={initialValues}
             onSubmit={onSearch}
             callback={setLineChartType}
+            projectOptions={projectOptions}
           />
 
           <ProjectLineChart
