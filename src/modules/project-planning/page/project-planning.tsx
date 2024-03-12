@@ -289,6 +289,7 @@ const ProjectPlanning = () => {
               options={projectOptions}
               popupClassName="capitalize"
               placeholder="Project"
+              showSearch={true}
               style={{ width: 300 }}
               onChange={(value) => onChangeProject(value)}
               filterOption={(input, option) =>
