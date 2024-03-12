@@ -293,7 +293,7 @@ const ProjectPlanning = () => {
               style={{ width: 300 }}
               onChange={(value) => onChangeProject(value)}
               filterOption={(input, option) =>
-                option.label.toLowerCase().includes(input)
+                option.label.toLowerCase().includes(input.toLowerCase())
               }
             />
           </Space>

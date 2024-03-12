@@ -35,7 +35,7 @@ const ProjectForm: FC<Props> = ({
                 popupClassName="capitalize"
                 placeholder="Project"
                 filterOption={(input, option) =>
-                  option.label.toLowerCase().includes(input)
+                  option.label.toLowerCase().includes(input.toLowerCase())
                 }
               />
             </Form.Item>
