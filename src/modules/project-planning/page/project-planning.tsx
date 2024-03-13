@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { DatePicker, Form, InputNumber, Select, Space, Spin, Table } from 'antd'
+import { DatePicker, InputNumber, Select, Space, Spin, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import { getAllEpic, getProjectRemaining } from '@/lib/api/project'
 import { ProjectRemaining } from '@/types/common'
@@ -81,16 +82,15 @@ const ProjectPlanning = () => {
     const typeAdap = type === 'start' ? -1 : 1
 
     while (count < countWorkingDays) {
-      const dayOfWeek = currentDate.getDay()
+      currentDate.setDate(currentDate.getDate() + typeAdap)
 
+      const dayOfWeek = currentDate.getDay()
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
         count++
       }
-
-      currentDate.setDate(currentDate.getDate() + typeAdap)
     }
 
-    return currentDate.toLocaleDateString()
+    return dayjs(currentDate).format('YYYY-MM-DD')
   }
 
   function handleStartDateExpect(item: any, value: any) {
@@ -109,7 +109,7 @@ const ProjectPlanning = () => {
         'start',
       )
     } else {
-      item.startDateET = value ? new Date(value).toLocaleDateString() : ''
+      item.startDateET = value ? dayjs(value).format('YYYY-MM-DD') : ''
       if (item.dueDateExpect && item.headCountExpect) {
         isWarning =
           item.startDateET !==
@@ -160,7 +160,7 @@ const ProjectPlanning = () => {
         'due',
       )
     } else {
-      item.dueDateET = value ? new Date(value).toLocaleDateString() : ''
+      item.dueDateET = value ? dayjs(value).format('YYYY-MM-DD') : ''
       if (item.startDateExpect && item.headCountExpect) {
         isWarning =
           item.dueDateET !==
