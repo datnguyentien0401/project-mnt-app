@@ -11,7 +11,7 @@ const searchUsers = (value: string, callback: Function) => {
     if (currentValue === value) {
       const result = res?.data || []
       const data = result.map((item: any) => ({
-        value: item.jiraMemberId,
+        value: item.accountId,
         text: item.displayName,
       }))
       callback(data)
@@ -38,19 +38,10 @@ const SearchUserInput: React.FC<{
   disabled?: boolean
   value?: string
   onChange?: (value: string) => void
-  onSelect?: (lead: { id: number; fullName: string }) => void
   placeholder?: string
   style?: React.CSSProperties
   defaultOptions?: SelectProps['options']
-}> = ({
-  disabled,
-  value,
-  onChange,
-  placeholder,
-  style,
-  onSelect,
-  defaultOptions,
-}) => {
+}> = ({ disabled, value, onChange, placeholder, style, defaultOptions }) => {
   const [data, setData] = useState<SelectProps['options']>(defaultOptions)
 
   const handleSearch = (newValue: string) => {
@@ -61,16 +52,6 @@ const SearchUserInput: React.FC<{
     if (onChange) {
       onChange(newValue)
     }
-
-    if (onSelect) {
-      const lead = data?.find((d) => d.value === newValue)
-      if (lead) {
-        onSelect({
-          id: lead.value as number,
-          fullName: lead.text,
-        })
-      }
-    }
   }
 
   useEffect(() => {
@@ -80,7 +61,6 @@ const SearchUserInput: React.FC<{
 
   return (
     <Select
-      className={'w-full'}
       showSearch
       value={value}
       placeholder={placeholder}
