@@ -56,7 +56,12 @@ const MemberAddForm = ({
               },
             ]}
           >
-            <SearchUserInput placeholder="Jira Member ID" />
+            <SearchUserInput
+              placeholder="Jira Member ID"
+              onChange={(value) => {
+                form.setFieldValue('jiraMemberId', value)
+              }}
+            />
           </Form.Item>
         </Col>
         <Col span={2}>
