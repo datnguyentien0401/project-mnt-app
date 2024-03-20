@@ -1,4 +1,4 @@
-import { Card, Col, Row, Space, Typography } from 'antd'
+import { Space, Typography } from 'antd'
 import React from 'react'
 import {
   Bar,
@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  ResponsiveContainer,
 } from 'recharts'
 import { ProjectStatistic } from '@/types/common'
 import { randomColor } from '@/utils/helper'
@@ -21,21 +22,21 @@ const barChartLegend = [
   {
     id: 'totalResolvedIssue',
     value: 'Resolved',
-    color: '#83ca9d',
+    color: 'green',
   },
   {
     id: 'totalInProgressIssue',
     value: 'In Progress',
-    color: '#8884d8',
+    color: 'blue',
   },
   {
     id: 'totalOpenIssue',
     value: 'Open',
-    color: '#ffc658',
+    color: 'red',
   },
 ]
 
-const ProjectLineChart = ({
+const ProjectChart = ({
   chartData,
   lineChartType,
 }: {
@@ -79,14 +80,13 @@ const ProjectLineChart = ({
   }, new Map<string, string>())
 
   return (
-    <Row gutter={[16, 16]} className="my-6">
-      <Col span={12}>
-        <Space className="w-full justify-center">
-          <Title level={3}>Project chart</Title>
-        </Space>
+    <>
+      {/*   project chart */}
+      <Space className="w-full justify-center">
+        <Title level={3}>Project chart</Title>
+      </Space>
+      <ResponsiveContainer width="100%" height={1000}>
         <LineChart
-          width={700}
-          height={1000}
           data={formattedChartData}
           margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
         >
@@ -107,14 +107,13 @@ const ProjectLineChart = ({
             </Line>
           ))}
         </LineChart>
-      </Col>
-      <Col span={12}>
-        <Space className="w-full justify-center">
-          <Title level={3}>Issue chart</Title>
-        </Space>
+      </ResponsiveContainer>
+      {/*   issue chart */}
+      <Space className="w-full justify-center">
+        <Title level={3}>Issue chart</Title>
+      </Space>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart
-          width={700}
-          height={1000}
           data={formattedColumnChartData}
           margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
         >
@@ -145,9 +144,9 @@ const ProjectLineChart = ({
             )),
           )}
         </BarChart>
-      </Col>
-    </Row>
+      </ResponsiveContainer>
+    </>
   )
 }
 
-export default ProjectLineChart
+export default ProjectChart

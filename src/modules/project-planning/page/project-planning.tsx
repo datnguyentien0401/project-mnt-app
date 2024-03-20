@@ -18,7 +18,7 @@ const ProjectPlanning = () => {
 
   const fetchProjectOptions = async () => {
     setIsFetching(true)
-    const data = await getAllEpic('', false)
+    const data = await getAllEpic([], false)
     setProjectOptions(
       data.map((epic: any) => ({
         value: epic.projectId,

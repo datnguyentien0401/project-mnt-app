@@ -7,9 +7,9 @@ let timeout: ReturnType<typeof setTimeout> | null
 let currentValue: string
 
 const searchProjects = (value: string, callback: Function) => {
-  getAllEpic(value, true).then((res: any) => {
+  getAllEpic([], true).then((res: any) => {
     if (currentValue === value) {
-      const result = res?.data || []
+      const result = res || []
       const data = result.map((item: any) => ({
         value: item.projectId,
         text: item.projectName,
@@ -62,16 +62,6 @@ const SearchProjectInput: React.FC<{
   const handleChange = (newValue: string) => {
     if (onChange) {
       onChange(newValue)
-    }
-
-    if (onSelect) {
-      const lead = data?.find((d) => d.value === newValue)
-      if (lead) {
-        onSelect({
-          projectId: lead.value as number,
-          projectName: lead.text,
-        })
-      }
     }
   }
 

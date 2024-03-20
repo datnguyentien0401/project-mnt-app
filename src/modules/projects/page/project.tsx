@@ -1,19 +1,20 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
-import { Spin } from 'antd'
+import { Card, Select, Spin } from 'antd'
 import ProjectTable from '@/modules/projects/component/project-table'
 import ProjectSearchForm from '@/modules/projects/component/project-search-form'
 import { type ProjectStatistic } from '@/types/common'
-import ProjectLineChart from '@/modules/projects/component/project-chart'
+import ProjectChart from '@/modules/projects/component/project-chart'
 import MainLayout from '@/modules/ui/layout/main-layout'
-import { getAllEpic, searchProject } from '@/lib/api/project'
+import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
 
 const ProjectList = () => {
   const [tableData, setTableData] = useState<ProjectStatistic[]>([])
   const [chartData, setChartData] = useState<ProjectStatistic[]>([])
   const [lineChartType, setLineChartType] = useState('totalResolvedIssue')
-  const [projectOptions, setProjectOptions] = useState([])
+  const [projectOptions, setProjectOptions] = useState<any[]>([])
+  const [jiraProjectOptions, setJiraProjectOptions] = useState<any[]>([])
   const [isFetching, setIsFetching] = useState(false)
 
   const initialValues = useMemo(() => {
@@ -25,7 +26,7 @@ const ProjectList = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
+    fetchJiraProjects()
   }, [])
 
   const fetchData = async () => {
@@ -34,12 +35,23 @@ const ProjectList = () => {
       initialValues.fromDate,
       initialValues.toDate,
     )
-    await fetchProjectOptions()
   }
 
-  const fetchProjectOptions = async () => {
+  const fetchJiraProjects = async () => {
     setIsFetching(true)
-    const data = await getAllEpic()
+    const data = await getAllJiraProject()
+    setJiraProjectOptions(
+      data.map((epic: any) => ({
+        value: epic.id,
+        label: epic.name,
+      })),
+    )
+    setIsFetching(false)
+  }
+
+  const fetchProjectOptions = async (jiraProject: string[]) => {
+    setIsFetching(true)
+    const data = await getAllEpic(jiraProject)
     setProjectOptions(
       data.map((epic: any) => ({
         value: epic.projectId,
@@ -73,23 +85,62 @@ const ProjectList = () => {
     )
   }
 
+  const handleChangeJiraProject = (jiraProjects: any[]) => {
+    if (jiraProjects.length > 0) {
+      getAllEpic(jiraProjects).then((res: any) => {
+        const epics = res || []
+        setProjectOptions(
+          epics.map((epic: any) => ({
+            value: epic.projectId,
+            label: epic.projectName,
+          })),
+        )
+        fetchProjectStatistic(
+          epics.map((item: any) => item.projectId),
+          initialValues.fromDate,
+          initialValues.toDate,
+        )
+      })
+    } else {
+      setProjectOptions([])
+    }
+  }
+
   return (
     <>
       <MainLayout headerName="Project">
         <Spin spinning={isFetching}>
-          <ProjectSearchForm
-            initialValues={initialValues}
-            onSubmit={onSearch}
-            callback={setLineChartType}
-            projectOptions={projectOptions}
-          />
+          <Card className="max-w-full mb-6">
+            <Select
+              options={jiraProjectOptions}
+              mode="multiple"
+              popupClassName="capitalize"
+              placeholder="Jira Project"
+              filterOption={(input, option) =>
+                option.label.toLowerCase().includes(input.toLowerCase())
+              }
+              style={{ width: 300 }}
+              onChange={(value) => handleChangeJiraProject(value)}
+            />
+          </Card>
 
-          <ProjectLineChart
-            chartData={chartData}
-            lineChartType={lineChartType}
-          />
+          {projectOptions.length > 0 && (
+            <>
+              <ProjectSearchForm
+                initialValues={initialValues}
+                onSubmit={onSearch}
+                callback={setLineChartType}
+                projectOptions={projectOptions}
+              />
 
-          <ProjectTable tableData={tableData} />
+              <ProjectChart
+                chartData={chartData}
+                lineChartType={lineChartType}
+              />
+
+              <ProjectTable tableData={tableData} />
+            </>
+          )}
         </Spin>
       </MainLayout>
     </>

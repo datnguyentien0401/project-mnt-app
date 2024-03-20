@@ -4,12 +4,12 @@ import AppConfig from '@/config'
 const baseUrl = AppConfig.API_URL
 
 export const getAllEpic = async (
-  projectName: string = '',
+  jiraProject: string[] = [],
   groupEpic: boolean = true,
 ) => {
   const response = await axios.get(`${baseUrl}/api/v1/projects/epic`, {
     params: {
-      projectName: projectName,
+      jiraProjectIds: jiraProject ? jiraProject.join(',') : '',
       groupEpic: groupEpic,
     },
   })
@@ -25,12 +25,12 @@ export const searchProject = async (
   fromDate: string,
   toDate: string,
 ) => {
-  const projectIdsStr = projectIds ? projectIds.join(',') : ''
-  const response = await axios.get(`${baseUrl}/api/v1/projects/search`, {
+  const epicIdsStr = projectIds ? projectIds.join(',') : ''
+  const response = await axios.get(`${baseUrl}/api/v1/projects/epic/search`, {
     params: {
       fromDate: fromDate,
       toDate: toDate,
-      projectIds: projectIdsStr,
+      epicIds: epicIdsStr,
     },
   })
   if (response.status != HttpStatusCode.Ok) {
@@ -47,6 +47,15 @@ export const getProjectRemaining = async (projectIds?: string[]) => {
       projectIds: projectIdsStr,
     },
   })
+  if (response.status != HttpStatusCode.Ok) {
+    console.error('Error fetching data:', response)
+    return []
+  }
+  return response.data
+}
+
+export const getAllJiraProject = async () => {
+  const response = await axios.get(`${baseUrl}/api/v1/projects/search`)
   if (response.status != HttpStatusCode.Ok) {
     console.error('Error fetching data:', response)
     return []
