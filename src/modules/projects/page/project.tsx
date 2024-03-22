@@ -29,60 +29,38 @@ const ProjectList = () => {
     fetchJiraProjects()
   }, [])
 
-  const fetchData = async () => {
-    await fetchProjectStatistic(
-      [],
-      initialValues.fromDate,
-      initialValues.toDate,
-    )
-  }
-
-  const fetchJiraProjects = async () => {
+  const fetchJiraProjects = () => {
     setIsFetching(true)
-    const data = await getAllJiraProject()
-    setJiraProjectOptions(
-      data.map((epic: any) => ({
-        value: epic.id,
-        label: epic.name,
-      })),
+    getAllJiraProject().then((data: any) =>
+      setJiraProjectOptions(
+        data.map((epic: any) => ({
+          value: epic.id,
+          label: epic.name,
+        })),
+      ),
     )
     setIsFetching(false)
   }
 
-  const fetchProjectOptions = async (jiraProject: string[]) => {
-    setIsFetching(true)
-    const data = await getAllEpic(jiraProject)
-    setProjectOptions(
-      data.map((epic: any) => ({
-        value: epic.projectId,
-        label: epic.projectName,
-      })),
-    )
-    setIsFetching(false)
-  }
-
-  const fetchProjectStatistic = async (
+  const fetchProjectStatistic = (
     projectIds: string[],
     fromDate: any,
     toDate: any,
   ) => {
     setIsFetching(true)
-    const data = await searchProject(
+    searchProject(
       projectIds,
       fromDate.format('YYYYMMDD'),
       toDate.format('YYYYMMDD'),
-    )
-    setTableData(data.totalData)
-    setChartData(data.listData)
+    ).then((data: any) => {
+      setTableData(data.totalData)
+      setChartData(data.listData)
+    })
     setIsFetching(false)
   }
 
   const onSearch = async (values: Record<string, any>) => {
-    await fetchProjectStatistic(
-      values.projectId,
-      values.fromDate,
-      values.toDate,
-    )
+    fetchProjectStatistic(values.projectId, values.fromDate, values.toDate)
   }
 
   const handleChangeJiraProject = (jiraProjects: any[]) => {

@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Card, Col, Input, Row, Space, Spin, notification } from 'antd'
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  Row,
+  Space,
+  Spin,
+  notification,
+  Select,
+} from 'antd'
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -22,7 +32,7 @@ import {
   updatePlanning,
 } from '@/lib/api/planning'
 import { ProjectRemaining } from '@/types/common'
-import { getProjectRemaining } from '@/lib/api/project'
+import { getAllEpic, getProjectRemaining } from '@/lib/api/project'
 
 const columnForTotalRequiredWorkforce = [
   'remainingTime',
@@ -36,22 +46,32 @@ const Planning = () => {
   const [showInput, setShowInput] = useState(false)
   const [tableName, setTableName] = useState<string>('')
   const [isFetching, setIsFetching] = useState(false)
-  const [projectRemainingList, setProjectRemainingList] = useState<
-    ProjectRemaining[]
-  >([])
   const [editNameKey, setEditNameKey] = useState('')
   const [reload, setReload] = useState(false)
+  const [projectOptions, setProjectOptions] = useState<any[]>([])
 
   useEffect(() => {
     fetchData()
   }, [reload])
 
-  const fetchData = async () => {
+  const fetchData = () => {
     setIsFetching(true)
-    const tables = await getAllPlanning()
-    const projectRemainings = await getProjectRemaining()
-    setTableList(tables)
-    setProjectRemainingList(projectRemainings)
+    getAllEpic([], false).then((data) =>
+      setProjectOptions(
+        data.map((epic: any) => ({
+          value: epic.projectId,
+          label: epic.projectName,
+        })),
+      ),
+    )
+    getAllPlanning().then((tables) => {
+      setTableList(
+        tables.map((table: any) => ({
+          ...table,
+          projectOptions: projectOptions,
+        })),
+      )
+    })
     setIsFetching(false)
     setReload(false)
   }
@@ -107,6 +127,7 @@ const Planning = () => {
         {
           key: uuidv4(),
           name: tableName,
+          projectOptions: projectOptions,
           availableWorkingData: [
             {
               id: uuidv4(),
@@ -136,7 +157,6 @@ const Planning = () => {
               id: uuidv4(),
             },
           ],
-          requiredWorkforceData: fetchRequiredWorkforceData(),
         },
         ...prevData,
       ])
@@ -145,7 +165,6 @@ const Planning = () => {
   }
 
   const onCloneTable = (table: any, tableName: string) => {
-    console.log(tableName)
     setTableList((prevData) => [
       {
         ...table,
@@ -156,16 +175,20 @@ const Planning = () => {
     ])
   }
 
-  function fetchRequiredWorkforceData() {
-    if (projectRemainingList && projectRemainingList.length > 0) {
+  async function fetchRequiredWorkforceData(projects: string[]) {
+    const projectRemainingList: ProjectRemaining[] =
+      await getProjectRemaining(projects)
+
+    if (projectRemainingList.length > 0) {
       let totalET = 0
       const requiredWorkforceData = projectRemainingList.map((item) => {
         totalET += item.timeEstimateMM
+        const curDate = dayjs()
         return {
           id: uuidv4(),
-          schedule: dayjs(),
-          startDate: dayjs(),
-          tqa: dayjs(),
+          schedule: curDate,
+          startDate: curDate,
+          tqa: curDate,
           dueDate: item.dueDate,
           status: item.status,
           project: item.epicName,
@@ -332,6 +355,13 @@ const Planning = () => {
     })
   }
 
+  async function handleChangeProject(updatedTable: any, projects: string[]) {
+    updateTables({
+      ...updatedTable,
+      requiredWorkforceData: await fetchRequiredWorkforceData(projects),
+    })
+  }
+
   return (
     <>
       <MainLayout headerName="Planning">
@@ -444,12 +474,25 @@ const Planning = () => {
                 <Col span={12}>
                   <TotalWorkforceTable dataSource={table.totalWorkforceData} />
                 </Col>
-                <RequiredWorkforceTable
-                  data={table.requiredWorkforceData}
-                  setRequiredWorkforceData={(data) => {
-                    onSetRequiredWorkforceData(table, data)
-                  }}
-                />
+                <Col span={24}>
+                  <Select
+                    options={table.projectOptions}
+                    mode="multiple"
+                    popupClassName="capitalize"
+                    placeholder="Project"
+                    filterOption={(input, option: any) =>
+                      option.label.toLowerCase().includes(input.toLowerCase())
+                    }
+                    style={{ width: 300, marginBottom: 10 }}
+                    onChange={(value) => handleChangeProject(table, value)}
+                  />
+                  <RequiredWorkforceTable
+                    data={table.requiredWorkforceData}
+                    setRequiredWorkforceData={(data) => {
+                      onSetRequiredWorkforceData(table, data)
+                    }}
+                  />
+                </Col>
               </Row>
             </Card>
           ))}

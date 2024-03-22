@@ -6,7 +6,6 @@ import AvgTeamTable from '@/modules/teams/component/avg-team-table'
 import AvgTeamChart from '@/modules/teams/component/avg-team-chart'
 import OverallTeamChart from '@/modules/teams/component/overall-team-chart'
 import TeamForm from '@/modules/teams/component/team-search-form'
-import { Term } from '@/types/common'
 import { getOverall } from '@/lib/api/team'
 
 const OverallTeam = () => {
@@ -31,9 +30,8 @@ const OverallTeam = () => {
 
   async function onSearch(fromDate: Date, toDate: Date) {
     setIsFetching(true)
-    const data = await getOverall(fromDate, toDate)
+    getOverall(fromDate, toDate).then((data) => setData(data))
     setIsFetching(false)
-    setData(data)
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Space, Spin, Table } from 'antd'
+import { Col, Row, Spin, Table } from 'antd'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import TeamForm from '@/modules/teams/component/team-search-form'
 import { getAllTeams, getTeamView } from '@/lib/api/team'
@@ -33,15 +33,16 @@ const TeamView = () => {
     fetchData()
   }, [])
 
-  const fetchData = async () => {
+  const fetchData = () => {
     setIsFetching(true)
-    const teams = await getAllTeams()
-    setTeamOptions(
-      teams.map((team: any) => ({
-        value: team.id,
-        label: team.name,
-      })),
-    )
+    getAllTeams().then((teams) => {
+      setTeamOptions(
+        teams.map((team: any) => ({
+          value: team.id,
+          label: team.name,
+        })),
+      )
+    })
     setIsFetching(false)
   }
 
