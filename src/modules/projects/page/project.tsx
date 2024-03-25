@@ -47,6 +47,9 @@ const ProjectList = () => {
     fromDate: any,
     toDate: any,
   ) => {
+    if (projectIds.length == 0) {
+      return
+    }
     setIsFetching(true)
     searchProject(
       projectIds,
