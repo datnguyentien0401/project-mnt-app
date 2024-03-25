@@ -51,6 +51,8 @@ const TeamView = () => {
     //   clearTimeout(timeout)
     //   timeout = null
     // }
+    setIsFetching(true)
+
     const membersInTeam: any[] = await getAllMembersByTeamId(teamId)
 
     setTeamMembers(membersInTeam)
@@ -71,6 +73,7 @@ const TeamView = () => {
       setTimeSpentData(result.timeSpentData)
       setResolvedIssueChartData(result.resolvedIssueChartData)
     })
+    setIsFetching(false)
   }
 
   return (

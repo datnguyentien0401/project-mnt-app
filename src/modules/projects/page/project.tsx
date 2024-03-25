@@ -60,11 +60,18 @@ const ProjectList = () => {
   }
 
   const onSearch = async (values: Record<string, any>) => {
-    fetchProjectStatistic(values.projectId, values.fromDate, values.toDate)
+    setIsFetching(true)
+    fetchProjectStatistic(
+      values.projectId || projectOptions.map((opt) => opt.value),
+      values.fromDate,
+      values.toDate,
+    )
+    setIsFetching(false)
   }
 
   const handleChangeJiraProject = (jiraProjects: any[]) => {
     if (jiraProjects.length > 0) {
+      setIsFetching(true)
       getAllEpic(jiraProjects).then((res: any) => {
         const epics = res || []
         setProjectOptions(
@@ -79,6 +86,7 @@ const ProjectList = () => {
           initialValues.toDate,
         )
       })
+      setIsFetching(false)
     } else {
       setProjectOptions([])
     }

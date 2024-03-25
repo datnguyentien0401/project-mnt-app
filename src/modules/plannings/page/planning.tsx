@@ -176,8 +176,10 @@ const Planning = () => {
   }
 
   async function fetchRequiredWorkforceData(projects: string[]) {
+    setIsFetching(true)
     const projectRemainingList: ProjectRemaining[] =
       await getProjectRemaining(projects)
+    setIsFetching(false)
 
     if (projectRemainingList.length > 0) {
       let totalET = 0
