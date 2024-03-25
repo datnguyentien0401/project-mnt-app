@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 
 const numberInputColumn = ['priority', 'buffer', 'actualWorkforce']
+const dateInputColumn = ['schedule', 'tqa', 'startDate']
 
 const RequiredWorkforceTable = ({
-  data,
+  data = [],
   setRequiredWorkforceData,
 }: {
   data: any[]
@@ -168,7 +169,7 @@ const RequiredWorkforceTable = ({
       key: 'remainingTime',
       dataIndex: 'remainingTime',
       sorter: (a: any, b: any) => a.remainingTime - b.remainingTime,
-      render: (text: number) => text?.toFixed(2),
+      render: (text: number) => (text ? text.toFixed(2) : ''),
     },
     {
       title: 'Buffer (%)',
@@ -192,7 +193,7 @@ const RequiredWorkforceTable = ({
       key: 'requiredWorkforce',
       dataIndex: 'requiredWorkforce',
       sorter: (a: any, b: any) => a.requiredWorkforce - b.requiredWorkforce,
-      render: (text: number) => text?.toFixed(2),
+      render: (text: number) => (text ? text.toFixed(2) : ''),
     },
     {
       title: 'Actual workforce',
@@ -255,6 +256,8 @@ const RequiredWorkforceTable = ({
     const newRow = columns.reduce((row: any, column: any) => {
       if (numberInputColumn.includes(column.key)) {
         row[column.key] = 0
+      } else if (dateInputColumn.includes(column.key)) {
+        row[column.key] = dayjs()
       } else {
         row[column.key] = ''
       }
