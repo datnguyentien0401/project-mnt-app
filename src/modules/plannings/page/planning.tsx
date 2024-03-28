@@ -54,24 +54,22 @@ const Planning = () => {
     fetchData()
   }, [reload])
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setIsFetching(true)
-    getAllEpic([], false).then((data) =>
-      setProjectOptions(
-        data.map((epic: any) => ({
-          value: epic.projectId,
-          label: epic.projectName,
-        })),
-      ),
+    const epics = (await getAllEpic([], false)) || []
+    setProjectOptions(
+      epics.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      })),
     )
-    getAllPlanning().then((tables) => {
-      setTableList(
-        tables.map((table: any) => ({
-          ...table,
-          projectOptions: projectOptions,
-        })),
-      )
-    })
+    const tables = await getAllPlanning()
+    setTableList(
+      tables.map((table: any) => ({
+        ...table,
+        projectOptions: projectOptions,
+      })),
+    )
     setIsFetching(false)
     setReload(false)
   }
@@ -176,6 +174,14 @@ const Planning = () => {
   }
 
   async function fetchRequiredWorkforceData(projects: string[]) {
+    if (projects.length <= 0) {
+      return [
+        {
+          id: uuidv4(),
+          disable: true,
+        },
+      ]
+    }
     setIsFetching(true)
     const projectRemainingList: ProjectRemaining[] =
       await getProjectRemaining(projects)

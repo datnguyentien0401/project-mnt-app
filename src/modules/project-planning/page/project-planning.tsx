@@ -16,16 +16,15 @@ const ProjectPlanning = () => {
     fetchProjectOptions()
   }, [])
 
-  const fetchProjectOptions = () => {
+  const fetchProjectOptions = async () => {
     setIsFetching(true)
-    getAllEpic([], false).then((data) => {
-      setProjectOptions(
-        data.map((epic: any) => ({
-          value: epic.projectId,
-          label: epic.projectName,
-        })),
-      )
-    })
+    const epics = (await getAllEpic([], false)) || []
+    setProjectOptions(
+      epics.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      })),
+    )
     setIsFetching(false)
   }
 

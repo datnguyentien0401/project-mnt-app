@@ -18,19 +18,19 @@ const TeamList = () => {
     fetchData()
   }, [])
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setIsFetching(true)
-    getAllTeams().then((teams) => {
-      setTeams(teams)
-      setTeamOptions(
-        teams.map((team: any) => ({
-          value: team.id,
-          label: team.name,
-        })),
-      )
-    })
+    const teams = (await getAllTeams()) || []
+    setTeams(teams)
+    setTeamOptions(
+      teams.map((team: any) => ({
+        value: team.id,
+        label: team.name,
+      })),
+    )
 
-    getAllMembers().then((members) => setMembers(members))
+    const members = (await getAllMembers()) || []
+    setMembers(members)
     setIsFetching(false)
   }
 

@@ -30,7 +30,8 @@ const OverallTeam = () => {
 
   async function onSearch(fromDate: Date, toDate: Date) {
     setIsFetching(true)
-    getOverall(fromDate, toDate).then((data) => setData(data))
+    const data = (await getOverall(fromDate, toDate)) || []
+    setData(data)
     setIsFetching(false)
   }
 

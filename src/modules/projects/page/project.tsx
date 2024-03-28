@@ -42,7 +42,7 @@ const ProjectList = () => {
     setIsFetching(false)
   }
 
-  const fetchProjectStatistic = (
+  const fetchProjectStatistic = async (
     projectIds: string[],
     fromDate: any,
     toDate: any,
@@ -50,21 +50,18 @@ const ProjectList = () => {
     if (projectIds.length == 0) {
       return
     }
-    setIsFetching(true)
-    searchProject(
+    const data = await searchProject(
       projectIds,
       fromDate.format('YYYYMMDD'),
       toDate.format('YYYYMMDD'),
-    ).then((data: any) => {
-      setTableData(data.totalData)
-      setChartData(data.listData)
-    })
-    setIsFetching(false)
+    )
+    setTableData(data.totalData)
+    setChartData(data.listData)
   }
 
   const onSearch = async (values: Record<string, any>) => {
     setIsFetching(true)
-    fetchProjectStatistic(
+    await fetchProjectStatistic(
       values.projectId || projectOptions.map((opt) => opt.value),
       values.fromDate,
       values.toDate,
@@ -72,26 +69,23 @@ const ProjectList = () => {
     setIsFetching(false)
   }
 
-  const handleChangeJiraProject = (jiraProjects: any[]) => {
+  const handleChangeJiraProject = async (jiraProjects: any[]) => {
+    setProjectOptions([])
     if (jiraProjects.length > 0) {
       setIsFetching(true)
-      getAllEpic(jiraProjects).then((res: any) => {
-        const epics = res || []
-        setProjectOptions(
-          epics.map((epic: any) => ({
-            value: epic.projectId,
-            label: epic.projectName,
-          })),
-        )
-        fetchProjectStatistic(
-          epics.map((item: any) => item.projectId),
-          initialValues.fromDate,
-          initialValues.toDate,
-        )
-      })
+      const epics = (await getAllEpic(jiraProjects)) || []
+      setProjectOptions(
+        epics.map((epic: any) => ({
+          value: epic.projectId,
+          label: epic.projectName,
+        })),
+      )
+      await fetchProjectStatistic(
+        epics.map((item: any) => item.projectId),
+        initialValues.fromDate,
+        initialValues.toDate,
+      )
       setIsFetching(false)
-    } else {
-      setProjectOptions([])
     }
   }
 

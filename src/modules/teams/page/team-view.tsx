@@ -33,16 +33,15 @@ const TeamView = () => {
     fetchData()
   }, [])
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setIsFetching(true)
-    getAllTeams().then((teams) => {
-      setTeamOptions(
-        teams.map((team: any) => ({
-          value: team.id,
-          label: team.name,
-        })),
-      )
-    })
+    const teams = (await getAllTeams()) || []
+    setTeamOptions(
+      teams.map((team: any) => ({
+        value: team.id,
+        label: team.name,
+      })),
+    )
     setIsFetching(false)
   }
 
@@ -66,13 +65,12 @@ const TeamView = () => {
       })),
     ])
 
-    getTeamView(teamId, fromDate, toDate).then((res: any) => {
-      const result = res?.data || []
-      setResolvedIssueData(result.resolvedIssueData)
-      setStoryPointData(result.storyPointData)
-      setTimeSpentData(result.timeSpentData)
-      setResolvedIssueChartData(result.resolvedIssueChartData)
-    })
+    const res = await getTeamView(teamId, fromDate, toDate)
+    const data = res?.data || []
+    setResolvedIssueData(data.resolvedIssueData)
+    setStoryPointData(data.storyPointData)
+    setTimeSpentData(data.timeSpentData)
+    setResolvedIssueChartData(data.resolvedIssueChartData)
     setIsFetching(false)
   }
 
