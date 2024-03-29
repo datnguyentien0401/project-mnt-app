@@ -13,6 +13,9 @@ const TeamForm = ({
 }) => {
   const [form] = Form.useForm()
   function onSearch(values: Record<string, any>) {
+    if (!values.year) {
+      return
+    }
     const fromDate = new Date(values.year)
     const toDate = new Date(values.year)
 
