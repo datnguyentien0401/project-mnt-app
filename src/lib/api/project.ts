@@ -13,10 +13,6 @@ export const getAllEpic = async (
       groupEpic: groupEpic,
     },
   })
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
@@ -33,10 +29,6 @@ export const searchProject = async (
       epicIds: epicIdsStr,
     },
   })
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
@@ -47,18 +39,10 @@ export const getProjectRemaining = async (projectIds?: string[]) => {
       projectIds: projectIdsStr,
     },
   })
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
 export const getAllJiraProject = async () => {
   const response = await axios.get(`${baseUrl}/api/v1/projects/search`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }

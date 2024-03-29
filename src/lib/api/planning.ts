@@ -12,10 +12,6 @@ const headers = {
 
 export const getAllPlanning = async () => {
   const response = await axios.get(`${baseUrl}${planningPath}`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
@@ -25,10 +21,6 @@ export const createPlanning = async (body: any) => {
     JSON.stringify(body),
     headers,
   )
-  if (response.status != HttpStatusCode.Created) {
-    console.error('Error save data:', response)
-    return null
-  }
   return response.data
 }
 
@@ -38,16 +30,9 @@ export const updatePlanning = async (id: number, body: any) => {
     JSON.stringify(body),
     headers,
   )
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error save data:', response)
-    return null
-  }
   return response.data
 }
 
 export const deletePlanning = async (id: number) => {
-  const response = await axios.delete(`${baseUrl}${planningPath}/${id}`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error delete data:', response)
-  }
+  await axios.delete(`${baseUrl}${planningPath}/${id}`)
 }

@@ -13,19 +13,11 @@ const headers = {
 
 export const getAllMembersByTeamId = async (teamId: number) => {
   const response = await axios.get(`${baseUrl}${teamPath}/team/${teamId}`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
 export const getAllMembers = async () => {
   const response = await axios.get(`${baseUrl}${teamPath}`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error fetching data:', response)
-    return []
-  }
   return response.data
 }
 
@@ -35,16 +27,9 @@ export const createMember = async (body: MemberRequest) => {
     JSON.stringify(body),
     headers,
   )
-  if (response.status != HttpStatusCode.Created) {
-    console.error('Error save data:', response)
-    return null
-  }
   return response.data
 }
 
 export const deleteMember = async (id: number) => {
-  const response = await axios.delete(`${baseUrl}${teamPath}/${id}`)
-  if (response.status != HttpStatusCode.Ok) {
-    console.error('Error delete data:', response)
-  }
+  await axios.delete(`${baseUrl}${teamPath}/${id}`)
 }
