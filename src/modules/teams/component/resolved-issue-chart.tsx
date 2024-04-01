@@ -1,44 +1,102 @@
 import { Space, Typography } from 'antd'
 import React from 'react'
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   LabelList,
   Legend,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  BarChart,
-  Bar,
 } from 'recharts'
+import { randomColor } from '@/utils/helper'
+import { Term } from '@/types/common'
 
 const { Title } = Typography
 
-const barChartLegend = [
+const term1st = [
   {
     id: 'Jan',
     value: 'Jan',
-    color: '#83ca9d',
+    color: 'red',
   },
   {
     id: 'Feb',
     value: 'Feb',
-    color: '#8884d8',
+    color: 'blue',
   },
   {
     id: 'Mar',
     value: 'Mar',
-    color: '#ffc658',
+    color: 'green',
+  },
+  {
+    id: 'Apr',
+    value: 'Apr',
+    color: 'violet',
+  },
+  {
+    id: 'May',
+    value: 'May',
+    color: 'orange',
+  },
+  {
+    id: 'Jun',
+    value: 'Jun',
+    color: 'yellow',
   },
 ]
+
+const term2nd = [
+  {
+    id: 'Jul',
+    value: 'Jul',
+    color: '#8A4A44',
+  },
+  {
+    id: 'Aug',
+    value: 'Aug',
+    color: '#5D02AC',
+  },
+  {
+    id: 'Sep',
+    value: 'Sep',
+    color: '#D28E00',
+  },
+  {
+    id: 'Oct',
+    value: 'Oct',
+    color: '#B20038',
+  },
+  {
+    id: 'Nov',
+    value: 'Nov',
+    color: '#9F05DD',
+  },
+  {
+    id: 'Dec',
+    value: 'Dec',
+    color: '#26CDF5',
+  },
+]
+
 const ResolvedIssueChart = ({
   title,
   data,
-  members,
+  term,
 }: {
   title: string
   data: any[]
-  members: any[]
+  term: Term
 }) => {
+  const barChartLegend =
+    term == Term.HALF_1
+      ? term1st
+      : term === Term.HALF_2
+        ? term2nd
+        : [...term1st, ...term2nd]
+
   return (
     <>
       <Space className="w-full justify-center">
@@ -55,14 +113,14 @@ const ResolvedIssueChart = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Legend payload={barChartLegend} />
+          <Legend />
           {barChartLegend.map((month) => (
             <Bar
               key={`${month.id}`}
               dataKey={`${month.id}`}
               name={`${month.value}`}
               stackId={'name'}
-              fill={month.color}
+              fill={month.color || randomColor()}
               barSize={30}
             >
               <LabelList

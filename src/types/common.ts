@@ -11,9 +11,9 @@ export interface TeamRequest {
 }
 
 export enum Term {
-  HALF_1,
-  HALF_2,
-  FULL,
+  HALF_1 = 'half1st',
+  HALF_2 = 'half2nd',
+  FULL = 'fullYear',
 }
 
 export interface ProjectRemaining {
