@@ -46,3 +46,18 @@ form.ant-form label {
 .edit-member-modal-reason .ant-modal-confirm-content {
   max-width: 100% !important;
 }
+
+.tooltip-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.custom-tooltip {
+  background-color: white;
+  border: 1px solid gray;
+  padding: 10px;
+
+  position: fixed;
+  z-index: 1;
+}

@@ -8,6 +8,7 @@ import { type ProjectStatistic } from '@/types/common'
 import ProjectChart from '@/modules/projects/component/project-chart'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
+import IssueChart from '@/modules/projects/component/issue-chart'
 
 const ProjectList = () => {
   const [tableData, setTableData] = useState<ProjectStatistic[]>([])
@@ -115,12 +116,8 @@ const ProjectList = () => {
                 callback={setLineChartType}
                 projectOptions={projectOptions}
               />
-
-              <ProjectChart
-                chartData={chartData}
-                lineChartType={lineChartType}
-              />
-
+              <ProjectChart data={chartData} lineChartType={lineChartType} />
+              <IssueChart data={chartData} />
               <ProjectTable tableData={tableData} />
             </>
           )}
