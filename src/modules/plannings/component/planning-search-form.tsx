@@ -63,6 +63,7 @@ const PlanningSearchForm = ({
                           .endOf('month'),
                       )
                     ) {
+                      form.setFieldValue('toDate', '')
                       alert('Date range is invalid!')
                     } else {
                       setToDate(value)
