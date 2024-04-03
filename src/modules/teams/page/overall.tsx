@@ -7,6 +7,8 @@ import AvgTeamChart from '@/modules/teams/component/avg-team-chart'
 import OverallTeamChart from '@/modules/teams/component/overall-team-chart'
 import TeamForm from '@/modules/teams/component/team-search-form'
 import { getOverall } from '@/lib/api/team'
+import { Term } from '@/types/common'
+import { getTimerangeByYearAndTerm } from '@/utils/helper'
 
 const OverallTeam = () => {
   const [isFetching, setIsFetching] = useState(false)
@@ -28,9 +30,10 @@ const OverallTeam = () => {
     }
   })
 
-  async function onSearch(fromDate: Date, toDate: Date) {
+  async function onSearch(year: string, term: Term) {
+    const timeRange = getTimerangeByYearAndTerm(year, term)
     setIsFetching(true)
-    const data = (await getOverall(fromDate, toDate)) || []
+    const data = (await getOverall(timeRange.fromDate, timeRange.toDate)) || []
     setData(data)
     setIsFetching(false)
   }
@@ -39,9 +42,7 @@ const OverallTeam = () => {
     <>
       <MainLayout headerName="Team Overall">
         <Spin spinning={isFetching}>
-          <TeamForm
-            onSubmit={(fromDate, toDate) => onSearch(fromDate, toDate)}
-          />
+          <TeamForm onSubmit={(year, term) => onSearch(year, term)} />
           {data.length > 0 && (
             <>
               <Row gutter={[12, 12]} className={'w-full'}>

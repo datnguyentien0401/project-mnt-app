@@ -7,6 +7,7 @@ import { getAllMembersByTeamId } from '@/lib/api/member'
 import StoryPointTimeSpentChart from '@/modules/teams/component/story-point-time-spent-chart'
 import ResolvedIssueChart from '@/modules/teams/component/resolved-issue-chart'
 import { Term } from '@/types/common'
+import { getTimerangeByYearAndTerm } from '@/utils/helper'
 
 const initColumn: any[] = [
   {
@@ -52,22 +53,12 @@ const TeamView = () => {
     //   clearTimeout(timeout)
     //   timeout = null
     // }
+    if (!teamId) {
+      return
+    }
     setTerm(term)
 
-    const fromDate = new Date(year)
-    const toDate = new Date(year)
-
-    //month based index = 0
-    if (term === Term.HALF_1) {
-      fromDate.setMonth(0, 1)
-      toDate.setMonth(5, 30)
-    } else if (term === Term.HALF_2) {
-      fromDate.setMonth(6, 1)
-      toDate.setMonth(11, 31)
-    } else if (term === Term.FULL) {
-      fromDate.setMonth(0, 1)
-      toDate.setMonth(11, 31)
-    }
+    const timeRange = getTimerangeByYearAndTerm(year, term)
 
     setIsFetching(true)
 
@@ -84,7 +75,7 @@ const TeamView = () => {
       })),
     ])
 
-    const res = await getTeamView(teamId, fromDate, toDate)
+    const res = await getTeamView(teamId, timeRange.fromDate, timeRange.toDate)
     const data = res?.data || []
     setResolvedIssueData(data.resolvedIssueData)
     setStoryPointData(data.storyPointData)

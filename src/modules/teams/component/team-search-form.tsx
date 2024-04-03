@@ -13,7 +13,7 @@ const TeamForm = ({
 }) => {
   const [form] = Form.useForm()
   function onSearch(values: Record<string, any>) {
-    if (!values.year || !values.term || !values.team) {
+    if (!values.year || !values.term) {
       return
     }
     onSubmit(values.year, values.term, values.team)
