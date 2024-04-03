@@ -47,34 +47,41 @@ const Planning = () => {
   const [tableName, setTableName] = useState<string>('')
   const [isFetching, setIsFetching] = useState(false)
   const [editNameKey, setEditNameKey] = useState('')
-  const [reload, setReload] = useState(false)
   const [projectOptions, setProjectOptions] = useState<any[]>([])
 
   useEffect(() => {
+    fetchProjectOptions()
     fetchData()
-  }, [reload])
+  }, [])
 
-  const fetchData = async () => {
+  const fetchProjectOptions = () => {
     setIsFetching(true)
-    const epics = (await getAllEpic([], false)) || []
-    setProjectOptions(
-      epics.map((epic: any) => ({
-        value: epic.projectId,
-        label: epic.projectName,
-      })),
-    )
-    const tables = await getAllPlanning()
-    setTableList(
-      tables.map((table: any) => ({
-        ...table,
-        projectOptions: projectOptions,
-      })),
+    getAllEpic([], false).then((epics) =>
+      setProjectOptions(
+        epics.map((epic: any) => ({
+          value: epic.projectId,
+          label: epic.projectName,
+        })),
+      ),
     )
     setIsFetching(false)
-    setReload(false)
   }
 
-  function onSave(tableKey: string) {
+  const fetchData = () => {
+    setIsFetching(true)
+    getAllPlanning().then((tables) =>
+      setTableList(
+        tables.map((table: any) => ({
+          ...table,
+          key: table.tableKey,
+          projectOptions: projectOptions,
+        })),
+      ),
+    )
+    setIsFetching(false)
+  }
+
+  async function onSave(tableKey: string) {
     const saveTable = tableList
       .filter((table) => table.key === tableKey)
       .reduce((table) => {
@@ -91,12 +98,11 @@ const Planning = () => {
         }
       })
     if (saveTable.id) {
-      updatePlanning(saveTable.id, saveTable)
+      await updatePlanning(saveTable.id, saveTable)
     } else {
-      createPlanning(saveTable)
+      await createPlanning(saveTable)
     }
     setEditNameKey('')
-    setReload(true)
 
     notification.open({
       message: 'Planning',
@@ -104,15 +110,12 @@ const Planning = () => {
     })
   }
 
-  const onRemoveTable = (tableKey: number) => {
+  const onRemoveTable = async (tableKey: number) => {
     const removedTable = tableList.find((table) => table.key === tableKey)
     if (removedTable.id) {
-      deletePlanning(removedTable.id).then(() => {
-        setReload(true)
-      })
-    } else {
-      setTableList(tableList.filter((table) => table.key !== tableKey))
+      await deletePlanning(removedTable.id)
     }
+    setTableList(tableList.filter((table) => table.key !== tableKey))
     notification.open({
       message: 'Planning',
       description: 'Remove table successfully',
@@ -168,6 +171,7 @@ const Planning = () => {
         ...table,
         key: uuidv4(),
         name: tableName,
+        id: undefined,
       },
       ...prevData,
     ])
