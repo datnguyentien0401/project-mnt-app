@@ -107,6 +107,7 @@ const TeamView = () => {
                     title={'Time spent'}
                     data={timeSpentData}
                     members={teamMembers}
+                    yunit={'MD'}
                   />
                 </Col>
                 <Col span={8}>
@@ -114,6 +115,7 @@ const TeamView = () => {
                     title={'Story point'}
                     data={storyPointData}
                     members={teamMembers}
+                    yunit={'Point'}
                   />
                 </Col>
               </Row>

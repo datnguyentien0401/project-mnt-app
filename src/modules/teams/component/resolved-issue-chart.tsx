@@ -107,11 +107,11 @@ const ResolvedIssueChart = ({
           width={500}
           height={500}
           data={data}
-          margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+          margin={{ top: 28, right: 20, left: 10, bottom: 10 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis label={{ value: '(Issue)', position: 'top', offset: 15 }} />
           <Tooltip />
           <Legend />
           {barChartLegend.map((month) => (

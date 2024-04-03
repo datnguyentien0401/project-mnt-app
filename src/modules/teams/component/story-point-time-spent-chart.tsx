@@ -19,10 +19,12 @@ const StoryPointTimeSpentChart = ({
   title,
   data,
   members,
+  yunit,
 }: {
   title: string
   data: any[]
   members: any[]
+  yunit?: string
 }) => {
   const memberNameById = members.reduce((map, item) => {
     map.set(item.jiraMemberId, item.name)
@@ -63,11 +65,15 @@ const StoryPointTimeSpentChart = ({
           width={500}
           height={500}
           data={data}
-          margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+          margin={{ top: 28, right: 60, bottom: 10 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" padding={{ left: 70 }} />
-          <YAxis />
+          <XAxis
+            dataKey="month"
+            padding={{ left: 70 }}
+            label={{ value: '(Month)', position: 'right', offset: 10 }}
+          />
+          <YAxis label={{ value: `(${yunit})`, position: 'top', offset: 15 }} />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           {members.map((member, index) => (
