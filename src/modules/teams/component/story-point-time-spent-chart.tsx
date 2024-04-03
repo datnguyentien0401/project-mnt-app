@@ -10,7 +10,9 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts'
-import { randomColor, stringToColor } from '@/utils/helper'
+import { stringToColor } from '@/utils/helper'
+import CustomTooltip from '@/modules/common/custom-tooltip'
+import CusTooltip from '@/modules/common/custom-tooltip'
 
 const { Title } = Typography
 const StoryPointTimeSpentChart = ({
@@ -27,6 +29,30 @@ const StoryPointTimeSpentChart = ({
     return map
   }, new Map<string, string>())
 
+  let member = ''
+  const mouseEnterHandler = (key: string, e?: any) => {
+    member = key
+  }
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: {
+    active?: any
+    payload?: any
+  }) => {
+    return (
+      <div>
+        {payload
+          .filter((item: any) => item.name === member)
+          .map((item: any) => (
+            <>
+              <CusTooltip item={item} />
+            </>
+          ))}
+      </div>
+    )
+  }
+
   return (
     <>
       <Space className="w-full justify-center">
@@ -42,7 +68,7 @@ const StoryPointTimeSpentChart = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" padding={{ left: 70 }} />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           {members.map((member, index) => (
             <Line
@@ -51,6 +77,14 @@ const StoryPointTimeSpentChart = ({
               dataKey={`${member.jiraMemberId}`}
               name={memberNameById.get(member.jiraMemberId)}
               stroke={stringToColor(member.jiraMemberId)}
+              activeDot={{
+                onMouseOver: (_, e) =>
+                  mouseEnterHandler(
+                    memberNameById.get(member.jiraMemberId) || '',
+                    e,
+                  ),
+                onMouseLeave: () => mouseEnterHandler(''),
+              }}
             >
               <LabelList position="top" />
             </Line>

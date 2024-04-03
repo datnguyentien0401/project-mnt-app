@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { ProjectStatistic } from '@/types/common'
 import { stringToColor } from '@/utils/helper'
+import CusTooltip from '@/modules/common/custom-tooltip'
 
 const { Title } = Typography
 
@@ -62,15 +63,7 @@ const ProjectChart = ({
           .filter((item: any) => item.name === projectName)
           .map((item: any) => (
             <>
-              <div
-                style={{
-                  background: 'white',
-                  border: '1px solid gray',
-                  padding: 10,
-                }}
-              >
-                {item.name}: {item.value}
-              </div>
+              <CusTooltip item={item} />
             </>
           ))}
       </div>
