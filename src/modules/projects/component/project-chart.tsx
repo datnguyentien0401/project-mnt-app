@@ -62,7 +62,7 @@ const ProjectChart = ({
           .filter((item: any) => item.name === projectName)
           .map((item: any) => (
             <>
-              <div className="custom-tooltip">
+              <div>
                 {item.name}: {item.value}
               </div>
             </>
