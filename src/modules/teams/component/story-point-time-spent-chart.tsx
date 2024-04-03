@@ -10,7 +10,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts'
-import { randomColor } from '@/utils/helper'
+import { randomColor, stringToColor } from '@/utils/helper'
 
 const { Title } = Typography
 const StoryPointTimeSpentChart = ({
@@ -50,7 +50,7 @@ const StoryPointTimeSpentChart = ({
               type="monotone"
               dataKey={`${member.jiraMemberId}`}
               name={memberNameById.get(member.jiraMemberId)}
-              stroke={randomColor()}
+              stroke={stringToColor(member.jiraMemberId)}
             >
               <LabelList position="top" />
             </Line>
