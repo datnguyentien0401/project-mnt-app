@@ -44,7 +44,7 @@ const term1st = [
   {
     id: 'Jun',
     value: 'Jun',
-    color: 'yellow',
+    color: 'pink',
   },
 ]
 
