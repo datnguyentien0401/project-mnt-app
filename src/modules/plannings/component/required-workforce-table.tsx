@@ -244,7 +244,7 @@ const RequiredWorkforceTable = ({
       item[columnKey] = value
 
       const requiredWorkforce = (item.remainingTime * (100 + item.buffer)) / 100
-      const lackWorkforce = item.actualWorkforce - item.requiredWorkforce
+      const lackWorkforce = item.actualWorkforce - requiredWorkforce
       item.requiredWorkforce = requiredWorkforce
       item.lackWorkforce = lackWorkforce
       return item
