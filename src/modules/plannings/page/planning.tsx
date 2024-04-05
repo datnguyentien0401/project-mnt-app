@@ -49,37 +49,30 @@ const Planning = () => {
   const [editNameKey, setEditNameKey] = useState('')
   const [projectOptions, setProjectOptions] = useState<any[]>([])
 
-  useEffect(() => {
-    fetchProjectOptions()
-    fetchData()
-  }, [])
-
-  const fetchProjectOptions = () => {
-    setIsFetching(true)
-    getAllEpic([], false).then((epics) =>
-      setProjectOptions(
-        epics.map((epic: any) => ({
-          value: epic.projectId,
-          label: epic.projectName,
-        })),
-      ),
-    )
-    setIsFetching(false)
-  }
-
   const fetchData = () => {
     setIsFetching(true)
-    getAllPlanning().then((tables) =>
-      setTableList(
-        tables.map((table: any) => ({
-          ...table,
-          key: table.tableKey,
-          projectOptions: projectOptions,
-        })),
-      ),
-    )
+    getAllEpic([], false).then((epics) => {
+      const options = epics.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      }))
+      setProjectOptions(options),
+        getAllPlanning().then((tables) =>
+          setTableList(
+            tables.map((table: any) => ({
+              ...table,
+              key: table.tableKey,
+              projectOptions: options,
+            })),
+          ),
+        )
+    })
     setIsFetching(false)
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   async function onSave(tableKey: string) {
     const saveTable = tableList

@@ -81,11 +81,6 @@ const ProjectList = () => {
           label: epic.projectName,
         })),
       )
-      await fetchProjectStatistic(
-        epics.map((item: any) => item.projectId),
-        initialValues.fromDate,
-        initialValues.toDate,
-      )
       setIsFetching(false)
     }
   }

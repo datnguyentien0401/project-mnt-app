@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { DatePicker, InputNumber, Select, Space, Spin, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
@@ -12,11 +12,7 @@ const ProjectPlanning = () => {
   const [projectOptions, setProjectOptions] = useState<any[]>([])
   const [isFetching, setIsFetching] = useState(false)
 
-  useEffect(() => {
-    fetchProjectOptions()
-  }, [])
-
-  const fetchProjectOptions = async () => {
+  const fetchProjectOptions = useCallback(async () => {
     setIsFetching(true)
     const epics = (await getAllEpic([], false)) || []
     setProjectOptions(
@@ -26,7 +22,11 @@ const ProjectPlanning = () => {
       })),
     )
     setIsFetching(false)
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchProjectOptions()
+  }, [])
 
   const onChangeProject = async (projectId: string) => {
     setIsFetching(true)

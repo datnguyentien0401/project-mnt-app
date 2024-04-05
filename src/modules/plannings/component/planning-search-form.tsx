@@ -1,6 +1,6 @@
 import { Card, Col, DatePicker, Form, Row } from 'antd'
 import React, { useMemo } from 'react'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 const PlanningSearchForm = ({
   fromDate,
@@ -10,8 +10,8 @@ const PlanningSearchForm = ({
 }: {
   fromDate: any
   toDate: any
-  setFromDate: (fromDate: any) => void
-  setToDate: (fromDate: any) => void
+  setFromDate: (fromDate: Dayjs) => void
+  setToDate: (fromDate: Dayjs) => void
 }) => {
   const [form] = Form.useForm()
   const initialValues = useMemo(() => {
@@ -59,7 +59,7 @@ const PlanningSearchForm = ({
                       value.isAfter(
                         form
                           .getFieldValue('fromDate')
-                          .add(1, 'month')
+                          .add(12, 'month')
                           .endOf('month'),
                       )
                     ) {

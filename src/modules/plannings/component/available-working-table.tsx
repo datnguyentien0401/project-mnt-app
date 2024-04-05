@@ -2,7 +2,8 @@ import { Button, Input, InputNumber, Space, Table } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
+import { countMonth } from '@/utils/helper'
 
 interface WorkingWeek {
   key: string
@@ -17,8 +18,8 @@ const AvailableWorkingTable = ({
   setAvailableWorkingData,
 }: {
   data: any[]
-  fromDate: any
-  toDate: any
+  fromDate: Dayjs
+  toDate: Dayjs
   setAvailableWorkingData: (data: any[], columns: any[]) => void
 }) => {
   const columns: any[] = [
@@ -40,58 +41,7 @@ const AvailableWorkingTable = ({
           />
         ),
     },
-    ...getWorkingWeeksInMonth(fromDate, false).map((workingWeek) => {
-      return {
-        title: workingWeek.year + ' ' + workingWeek.week,
-        key: workingWeek.key,
-        dataIndex: workingWeek.key,
-        render: (text: any, record: any) => {
-          return record.disable ? (
-            text
-          ) : (
-            <InputNumber
-              value={text}
-              defaultValue={0}
-              min={0}
-              onChange={(event) =>
-                onChange(workingWeek.key, record.id, event ?? 0)
-              }
-            />
-          )
-        },
-      }
-    }),
-    {
-      title: `Total ${fromDate.format('YYYY/MM')}`,
-      key: `total${fromDate.format('YYYYMM')}`,
-      dataIndex: `total${fromDate.format('YYYYMM')}`,
-    },
-    ...getWorkingWeeksInMonth(toDate, true).map((workingWeek) => {
-      return {
-        title: workingWeek.year + ' ' + workingWeek.week,
-        key: workingWeek.key,
-        dataIndex: workingWeek.key,
-        render: (text: any, record: any) => {
-          return record.disable ? (
-            text
-          ) : (
-            <InputNumber
-              value={text}
-              defaultValue={0}
-              min={0}
-              onChange={(event) =>
-                onChange(workingWeek.key, record.id, event ?? 0)
-              }
-            />
-          )
-        },
-      }
-    }),
-    {
-      title: `Total ${toDate.format('YYYY/MM')}`,
-      key: `total${toDate.format('YYYYMM')}`,
-      dataIndex: `total${toDate.format('YYYYMM')}`,
-    },
+    ...getWorkingMonth(fromDate, toDate),
     {
       title: '-',
       key: 'action',
@@ -107,6 +57,58 @@ const AvailableWorkingTable = ({
         ),
     },
   ]
+
+  function getWorkingMonth(fromDate: any, toDate: any): any[] {
+    const numOfMonths = countMonth(new Date(fromDate), new Date(toDate))
+
+    let result: any[] = [
+      ...getWorkingWeeksInMonth(fromDate, false).map((workingWeek) =>
+        getWorkingWeekColumns(workingWeek),
+      ),
+      getTotalWeekColumn(fromDate),
+    ]
+    for (let i = 0; i < numOfMonths - 1; i++) {
+      fromDate = fromDate.add(1, 'month')
+      result = [
+        ...result,
+        ...getWorkingWeeksInMonth(fromDate, true).map((workingWeek) =>
+          getWorkingWeekColumns(workingWeek),
+        ),
+        getTotalWeekColumn(fromDate),
+      ]
+    }
+    return result
+  }
+
+  function getWorkingWeekColumns(workingWeek: WorkingWeek) {
+    return {
+      title: workingWeek.year + ' ' + workingWeek.week,
+      key: workingWeek.key,
+      dataIndex: workingWeek.key,
+      render: (text: any, record: any) => {
+        return record.disable ? (
+          text
+        ) : (
+          <InputNumber
+            value={text}
+            defaultValue={0}
+            min={0}
+            onChange={(event) =>
+              onChange(workingWeek.key, record.id, event ?? 0)
+            }
+          />
+        )
+      },
+    }
+  }
+
+  function getTotalWeekColumn(fromDate: any) {
+    return {
+      title: `Total ${fromDate.format('YYYY/MM')}`,
+      key: `total${fromDate.format('YYYYMM')}`,
+      dataIndex: `total${fromDate.format('YYYYMM')}`,
+    }
+  }
 
   function getWorkingWeeksInMonth(
     dateInput: any,

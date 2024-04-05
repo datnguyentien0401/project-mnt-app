@@ -4,7 +4,7 @@ export function randomColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`
 }
 
-export function stringToColor(str: string) {
+export function stringToColor(str: string): string {
   let hash = 0
   str.split('').forEach((char) => {
     hash = char.charCodeAt(0) + ((hash << 5) - hash)
@@ -17,7 +17,10 @@ export function stringToColor(str: string) {
   return colour
 }
 
-export function getTimerangeByYearAndTerm(year: string, term: Term) {
+export function getTimerangeByYearAndTerm(
+  year: string,
+  term: Term,
+): { fromDate: Date; toDate: Date } {
   const fromDate = new Date(year)
   const toDate = new Date(year)
 
@@ -36,4 +39,20 @@ export function getTimerangeByYearAndTerm(year: string, term: Term) {
     fromDate: fromDate,
     toDate: toDate,
   }
+}
+
+export function countMonth(fromDate: Date, toDate: Date): number {
+  const fromYear = fromDate.getFullYear()
+  const fromMonth = fromDate.getMonth()
+
+  const toYear = toDate.getFullYear()
+  const toMonth = toDate.getMonth()
+  return (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1
+}
+
+export function newAbortSignal(timeoutMs: number) {
+  const abortController = new AbortController()
+  setTimeout(() => abortController.abort(), timeoutMs || 0)
+
+  return abortController.signal
 }
