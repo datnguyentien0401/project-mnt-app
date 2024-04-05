@@ -1,32 +1,53 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { DatePicker, InputNumber, Select, Space, Spin, Table } from 'antd'
+import { Card, DatePicker, InputNumber, Select, Space, Spin, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import MainLayout from '@/modules/ui/layout/main-layout'
-import { getAllEpic, getProjectRemaining } from '@/lib/api/project'
+import {
+  getAllEpic,
+  getAllJiraProject,
+  getProjectRemaining,
+} from '@/lib/api/project'
 import { ProjectRemaining } from '@/types/common'
 
 const ProjectPlanning = () => {
   const [dataSource, setDataSource] = useState<any[]>([])
   const [warning, setWarning] = useState(false)
   const [projectOptions, setProjectOptions] = useState<any[]>([])
+  const [jiraProjectOptions, setJiraProjectOptions] = useState<any[]>([])
   const [isFetching, setIsFetching] = useState(false)
 
-  const fetchProjectOptions = useCallback(async () => {
+  const fetchJiraProjects = () => {
     setIsFetching(true)
-    const epics = (await getAllEpic([], false)) || []
-    setProjectOptions(
-      epics.map((epic: any) => ({
-        value: epic.projectId,
-        label: epic.projectName,
-      })),
+    getAllJiraProject().then((data: any) =>
+      setJiraProjectOptions(
+        data.map((epic: any) => ({
+          value: epic.id,
+          label: epic.name,
+        })),
+      ),
     )
     setIsFetching(false)
-  }, [])
+  }
 
   useEffect(() => {
-    fetchProjectOptions()
+    fetchJiraProjects()
   }, [])
+
+  const handleChangeJiraProject = async (jiraProjects: any[]) => {
+    setProjectOptions([])
+    if (jiraProjects.length > 0) {
+      setIsFetching(true)
+      const epics = (await getAllEpic(jiraProjects)) || []
+      setProjectOptions(
+        epics.map((epic: any) => ({
+          value: epic.projectId,
+          label: epic.projectName,
+        })),
+      )
+      setIsFetching(false)
+    }
+  }
 
   const onChangeProject = async (projectId: string) => {
     setIsFetching(true)
@@ -284,122 +305,143 @@ const ProjectPlanning = () => {
     <>
       <MainLayout headerName="Project Planning">
         <Spin spinning={isFetching}>
-          <Space style={{ marginBottom: '10px' }}>
+          <Card className="max-w-full mb-6">
             <Select
-              options={projectOptions}
+              options={jiraProjectOptions}
+              mode="multiple"
               popupClassName="capitalize"
-              placeholder="Project"
-              showSearch={true}
-              style={{ width: 300 }}
-              onChange={(value) => onChangeProject(value)}
+              placeholder="Jira Project"
               filterOption={(input, option) =>
                 option.label.toLowerCase().includes(input.toLowerCase())
               }
+              style={{ width: 300 }}
+              onChange={(value) => handleChangeJiraProject(value)}
             />
-          </Space>
-          <Table
-            dataSource={dataSource}
-            bordered
-            pagination={false}
-            footer={() =>
-              warning ? (
-                <span style={{ color: 'red' }}>
-                  Warning to change remaining time since others are fixed
-                </span>
-              ) : (
-                ''
-              )
-            }
-          >
-            <Table.ColumnGroup title="Expectation">
-              <Table.Column
-                title="Remaining Time"
-                dataIndex="remainingTimeExpect"
-                key="remainingTimeExpect"
-                render={(text: any, record: any) => {
-                  return (
-                    <InputNumber
-                      value={text}
-                      min={0}
-                      onChange={(event) =>
-                        onChange('remainingTimeExpect', record.id, event ?? 0)
-                      }
-                    />
+          </Card>
+          {projectOptions.length > 0 && (
+            <>
+              <Card className="max-w-full mb-6">
+                <Select
+                  options={projectOptions}
+                  popupClassName="capitalize"
+                  placeholder="Project"
+                  showSearch={true}
+                  style={{ width: 300 }}
+                  onChange={(value) => onChangeProject(value)}
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  }
+                />
+              </Card>
+              <Table
+                dataSource={dataSource}
+                bordered
+                pagination={false}
+                footer={() =>
+                  warning ? (
+                    <span style={{ color: 'red' }}>
+                      Warning to change remaining time since others are fixed
+                    </span>
+                  ) : (
+                    ''
                   )
-                }}
-              />
-              <Table.Column
-                title="Start Date"
-                dataIndex="startDateExpect"
-                key="startDateExpect"
-                render={(text: any, record: any) => {
-                  return (
-                    <DatePicker
-                      value={text}
-                      onChange={(value) =>
-                        onChange('startDateExpect', record.id, value)
-                      }
-                    />
-                  )
-                }}
-              />
-              <Table.Column
-                title="Due Date"
-                dataIndex="dueDateExpect"
-                key="dueDateExpect"
-                render={(text: any, record: any) => {
-                  return (
-                    <DatePicker
-                      value={text}
-                      onChange={(value) =>
-                        onChange('dueDateExpect', record.id, value)
-                      }
-                    />
-                  )
-                }}
-              />
-              <Table.Column
-                title="Head Count"
-                dataIndex="headCountExpect"
-                key="headCountExpect"
-                render={(text: any, record: any) => {
-                  return (
-                    <InputNumber
-                      value={text}
-                      min={0}
-                      onChange={(event) =>
-                        onChange('headCountExpect', record.id, event ?? 0)
-                      }
-                    />
-                  )
-                }}
-              />
-            </Table.ColumnGroup>
-            <Table.ColumnGroup title="Estimation">
-              <Table.Column
-                title="Remaining Time"
-                dataIndex="remainingTimeET"
-                key="remainingTimeET"
-                render={(text: number) => text?.toFixed(1)}
-              />
-              <Table.Column
-                title="Start Date"
-                dataIndex="startDateET"
-                key="startDateET"
-              />
-              <Table.Column
-                title="Due Date"
-                dataIndex="dueDateET"
-                key="dueDateET"
-              />
-              <Table.Column
-                title="Head Count"
-                dataIndex="headCountET"
-                key="headCountET"
-                render={(text: number) => text?.toFixed(1)}
-              />
-            </Table.ColumnGroup>
-          </Table>
+                }
+              >
+                <Table.ColumnGroup title="Expectation">
+                  <Table.Column
+                    title="Remaining Time"
+                    dataIndex="remainingTimeExpect"
+                    key="remainingTimeExpect"
+                    render={(text: any, record: any) => {
+                      return (
+                        <InputNumber
+                          value={text}
+                          min={0}
+                          onChange={(event) =>
+                            onChange(
+                              'remainingTimeExpect',
+                              record.id,
+                              event ?? 0,
+                            )
+                          }
+                        />
+                      )
+                    }}
+                  />
+                  <Table.Column
+                    title="Start Date"
+                    dataIndex="startDateExpect"
+                    key="startDateExpect"
+                    render={(text: any, record: any) => {
+                      return (
+                        <DatePicker
+                          value={text}
+                          onChange={(value) =>
+                            onChange('startDateExpect', record.id, value)
+                          }
+                        />
+                      )
+                    }}
+                  />
+                  <Table.Column
+                    title="Due Date"
+                    dataIndex="dueDateExpect"
+                    key="dueDateExpect"
+                    render={(text: any, record: any) => {
+                      return (
+                        <DatePicker
+                          value={text}
+                          onChange={(value) =>
+                            onChange('dueDateExpect', record.id, value)
+                          }
+                        />
+                      )
+                    }}
+                  />
+                  <Table.Column
+                    title="Head Count"
+                    dataIndex="headCountExpect"
+                    key="headCountExpect"
+                    render={(text: any, record: any) => {
+                      return (
+                        <InputNumber
+                          value={text}
+                          min={0}
+                          onChange={(event) =>
+                            onChange('headCountExpect', record.id, event ?? 0)
+                          }
+                        />
+                      )
+                    }}
+                  />
+                </Table.ColumnGroup>
+                <Table.ColumnGroup title="Estimation">
+                  <Table.Column
+                    title="Remaining Time"
+                    dataIndex="remainingTimeET"
+                    key="remainingTimeET"
+                    render={(text: number) => text?.toFixed(1)}
+                  />
+                  <Table.Column
+                    title="Start Date"
+                    dataIndex="startDateET"
+                    key="startDateET"
+                  />
+                  <Table.Column
+                    title="Due Date"
+                    dataIndex="dueDateET"
+                    key="dueDateET"
+                  />
+                  <Table.Column
+                    title="Head Count"
+                    dataIndex="headCountET"
+                    key="headCountET"
+                    render={(text: number) => text?.toFixed(1)}
+                  />
+                </Table.ColumnGroup>
+              </Table>
+            </>
+          )}
         </Spin>
       </MainLayout>
     </>

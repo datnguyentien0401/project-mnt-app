@@ -26,10 +26,6 @@ const ProjectList = () => {
     }
   }, [])
 
-  useEffect(() => {
-    fetchJiraProjects()
-  }, [])
-
   const fetchJiraProjects = () => {
     setIsFetching(true)
     getAllJiraProject().then((data: any) =>
@@ -42,6 +38,10 @@ const ProjectList = () => {
     )
     setIsFetching(false)
   }
+
+  useEffect(() => {
+    fetchJiraProjects()
+  }, [])
 
   const fetchProjectStatistic = async (
     projectIds: string[],

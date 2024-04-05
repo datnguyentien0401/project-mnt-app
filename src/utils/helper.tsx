@@ -49,10 +49,3 @@ export function countMonth(fromDate: Date, toDate: Date): number {
   const toMonth = toDate.getMonth()
   return (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1
 }
-
-export function newAbortSignal(timeoutMs: number) {
-  const abortController = new AbortController()
-  setTimeout(() => abortController.abort(), timeoutMs || 0)
-
-  return abortController.signal
-}
