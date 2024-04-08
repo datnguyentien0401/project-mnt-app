@@ -275,6 +275,7 @@ const RequiredWorkforceTable = ({
   const onAddRow = (values: Record<string, any>) => {
     if (values.projects && values.projects.length > 0) {
       handleChangeProject(values.projects)
+      form.resetFields()
       return
     }
     const newRow = columns.reduce((row: any, column: any) => {
@@ -296,7 +297,7 @@ const RequiredWorkforceTable = ({
   }
 
   const [projectOptions, setProjectOptions] = useState<any[]>([])
-  const handleChangeJiraProject2 = async (jiraProjects: any[]) => {
+  const handleChangeJiraProject = async (jiraProjects: any[]) => {
     if (jiraProjects.length > 0) {
       setFetching(true)
       const epics = (await getAllEpic(jiraProjects)) || []
@@ -331,7 +332,7 @@ const RequiredWorkforceTable = ({
                     option.label.toLowerCase().includes(input.toLowerCase())
                   }
                   style={{ width: 300 }}
-                  onChange={handleChangeJiraProject2}
+                  onChange={handleChangeJiraProject}
                 />
               </Col>
               <Col span={11}>
