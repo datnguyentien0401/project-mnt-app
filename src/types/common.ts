@@ -46,3 +46,8 @@ export interface AppMenu {
   href?: string
   children?: AppMenu[]
 }
+
+export interface Option {
+  label: string
+  value: string | number
+}

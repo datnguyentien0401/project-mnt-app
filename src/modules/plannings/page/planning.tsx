@@ -32,7 +32,11 @@ import {
   updatePlanning,
 } from '@/lib/api/planning'
 import { ProjectRemaining } from '@/types/common'
-import { getAllEpic, getProjectRemaining } from '@/lib/api/project'
+import {
+  getAllEpic,
+  getAllJiraProject,
+  getProjectRemaining,
+} from '@/lib/api/project'
 
 const columnForTotalRequiredWorkforce = [
   'remainingTime',
@@ -47,32 +51,70 @@ const Planning = () => {
   const [tableName, setTableName] = useState<string>('')
   const [isFetching, setIsFetching] = useState(false)
   const [editNameKey, setEditNameKey] = useState('')
-  const [projectOptions, setProjectOptions] = useState<any[]>([])
+  const [jiraProjectOptions, setJiraProjectOptions] = useState<any[]>([])
 
   const fetchData = () => {
     setIsFetching(true)
-    getAllEpic([], false).then((epics) => {
-      const options = epics.map((epic: any) => ({
-        value: epic.projectId,
-        label: epic.projectName,
-      }))
-      setProjectOptions(options),
-        getAllPlanning().then((tables) =>
-          setTableList(
-            tables.map((table: any) => ({
-              ...table,
-              key: table.tableKey,
-              projectOptions: options,
-            })),
-          ),
-        )
-    })
+    getAllJiraProject().then((data: any) =>
+      setJiraProjectOptions(
+        data.map((epic: any) => ({
+          value: epic.id,
+          label: epic.name,
+        })),
+      ),
+    )
+    getAllPlanning().then((tables) =>
+      setTableList(
+        tables.map((table: any) => ({
+          ...table,
+          key: table.tableKey,
+        })),
+      ),
+    )
     setIsFetching(false)
   }
 
   useEffect(() => {
     fetchData()
   }, [])
+
+  const handleChangeJiraProject = async (
+    jiraProjects: any[],
+    tableKey: string,
+  ) => {
+    if (jiraProjects.length > 0) {
+      setIsFetching(true)
+      const epics = (await getAllEpic(jiraProjects)) || []
+      const options = epics.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      }))
+      setTableList(
+        tableList.map((table: any) => {
+          if (table.key === tableKey) {
+            return {
+              ...table,
+              projectOptions: options,
+            }
+          }
+          return table
+        }),
+      )
+      setIsFetching(false)
+    } else {
+      setTableList(
+        tableList.map((table: any) => {
+          if (table.key === tableKey) {
+            return {
+              ...table,
+              projectOptions: [],
+            }
+          }
+          return table
+        }),
+      )
+    }
+  }
 
   async function onSave(tableKey: string) {
     const saveTable = tableList
@@ -121,7 +163,7 @@ const Planning = () => {
         {
           key: uuidv4(),
           name: tableName,
-          projectOptions: projectOptions,
+          // projectOptions: projectOptions,
           availableWorkingData: [
             {
               id: uuidv4(),
@@ -170,14 +212,12 @@ const Planning = () => {
     ])
   }
 
-  async function fetchRequiredWorkforceData(projects: string[]) {
+  async function fetchRequiredWorkforceData(
+    initData: any[],
+    projects: string[],
+  ) {
     if (projects.length <= 0) {
-      return [
-        {
-          id: uuidv4(),
-          disable: true,
-        },
-      ]
+      return initData
     }
     setIsFetching(true)
     const projectRemainingList: ProjectRemaining[] =
@@ -185,9 +225,10 @@ const Planning = () => {
     setIsFetching(false)
 
     if (projectRemainingList.length > 0) {
-      let totalET = 0
-      const requiredWorkforceData = projectRemainingList.map((item) => {
-        totalET += item.timeEstimateMM
+      let totalETNew = 0
+
+      const requiredWorkforceDataNew = projectRemainingList.map((item) => {
+        totalETNew += item.timeEstimateMM
         const curDate = dayjs()
         return {
           id: uuidv4(),
@@ -202,22 +243,32 @@ const Planning = () => {
           requiredWorkforce: item.timeEstimateMM,
         }
       })
-      return [
-        ...requiredWorkforceData,
-        {
-          id: uuidv4(),
-          disable: true,
-          remainingTime: totalET,
-          requiredWorkforce: totalET,
-        },
-      ]
+
+      if (initData) {
+        let totalData = initData.filter((item) => item.disable)[0]
+        totalData = {
+          ...totalData,
+          remainingTime: totalData.remainingTime + totalETNew,
+          requiredWorkforce: totalData.requiredWorkforce + totalETNew,
+        }
+        return [
+          ...initData.filter((item) => !item.disable),
+          ...requiredWorkforceDataNew,
+          totalData,
+        ]
+      } else {
+        return [
+          ...requiredWorkforceDataNew,
+          {
+            id: uuidv4(),
+            disable: true,
+            remainingTime: totalETNew,
+            requiredWorkforce: totalETNew,
+          },
+        ]
+      }
     } else {
-      return [
-        {
-          id: uuidv4(),
-          disable: true,
-        },
-      ]
+      return initData
     }
   }
 
@@ -360,10 +411,13 @@ const Planning = () => {
     })
   }
 
-  async function handleChangeProject(updatedTable: any, projects: string[]) {
+  async function handleChangeProject(projects: string[], updatedTable: any) {
     updateTables({
       ...updatedTable,
-      requiredWorkforceData: await fetchRequiredWorkforceData(projects),
+      requiredWorkforceData: await fetchRequiredWorkforceData(
+        updatedTable.requiredWorkforceData,
+        projects,
+      ),
     })
   }
 
@@ -480,22 +534,16 @@ const Planning = () => {
                   <TotalWorkforceTable dataSource={table.totalWorkforceData} />
                 </Col>
                 <Col span={24}>
-                  <Select
-                    options={table.projectOptions}
-                    mode="multiple"
-                    popupClassName="capitalize"
-                    placeholder="Project"
-                    filterOption={(input, option: any) =>
-                      option.label.toLowerCase().includes(input.toLowerCase())
-                    }
-                    style={{ width: 300, marginBottom: 10 }}
-                    onChange={(value) => handleChangeProject(table, value)}
-                  />
                   <RequiredWorkforceTable
                     data={table.requiredWorkforceData}
+                    jiraProjectOptions={jiraProjectOptions}
+                    handleChangeProject={(value) =>
+                      handleChangeProject(value, table)
+                    }
                     setRequiredWorkforceData={(data) => {
                       onSetRequiredWorkforceData(table, data)
                     }}
+                    setFetching={setIsFetching}
                   />
                 </Col>
               </Row>

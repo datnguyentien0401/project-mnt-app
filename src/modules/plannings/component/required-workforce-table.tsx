@@ -1,18 +1,37 @@
-import React from 'react'
-import { Button, DatePicker, Input, InputNumber, Space, Table } from 'antd'
+import React, { useState } from 'react'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Space,
+  Table,
+} from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
+import { Option } from '@/types/common'
+import { getAllEpic } from '@/lib/api/project'
 
 const numberInputColumn = ['priority', 'buffer', 'actualWorkforce']
 const dateInputColumn = ['schedule', 'tqa', 'startDate']
 
 const RequiredWorkforceTable = ({
   data = [],
+  jiraProjectOptions = [],
   setRequiredWorkforceData,
+  handleChangeProject,
+  setFetching,
 }: {
   data: any[]
+  jiraProjectOptions: Option[]
   setRequiredWorkforceData: (data: any[]) => void
+  handleChangeProject: (value: any[]) => void
+  setFetching: (value: boolean) => void
 }) => {
   const columns: any[] = [
     {
@@ -235,6 +254,7 @@ const RequiredWorkforceTable = ({
         ),
     },
   ]
+  const [form] = Form.useForm()
 
   function onChange(columnKey: string, rowId: string, value: any) {
     const updatedDataSource = data.map((item) => {
@@ -252,7 +272,11 @@ const RequiredWorkforceTable = ({
     setRequiredWorkforceData(updatedDataSource)
   }
 
-  const onAddRow = () => {
+  const onAddRow = (values: Record<string, any>) => {
+    if (values.projects && values.projects.length > 0) {
+      handleChangeProject(values.projects)
+      return
+    }
     const newRow = columns.reduce((row: any, column: any) => {
       if (numberInputColumn.includes(column.key)) {
         row[column.key] = 0
@@ -271,6 +295,22 @@ const RequiredWorkforceTable = ({
     setRequiredWorkforceData(data.filter((row) => row.id !== rowId))
   }
 
+  const [projectOptions, setProjectOptions] = useState<any[]>([])
+  const handleChangeJiraProject2 = async (jiraProjects: any[]) => {
+    if (jiraProjects.length > 0) {
+      setFetching(true)
+      const epics = (await getAllEpic(jiraProjects)) || []
+      const options = epics.map((epic: any) => ({
+        value: epic.projectId,
+        label: epic.projectName,
+      }))
+      setProjectOptions(options)
+      setFetching(false)
+    } else {
+      setProjectOptions([])
+    }
+  }
+
   return (
     <Table
       bordered
@@ -279,12 +319,45 @@ const RequiredWorkforceTable = ({
       dataSource={data}
       title={() => (
         <Space className="w-full justify-end">
-          <Button
-            onClick={onAddRow}
-            type="primary"
-            icon={<PlusOutlined />}
-            className="align-left"
-          />
+          <Form form={form} autoComplete="off" onFinish={onAddRow}>
+            <Row gutter={[12, 12]}>
+              <Col span={11}>
+                <Select
+                  options={jiraProjectOptions}
+                  mode="multiple"
+                  popupClassName="capitalize"
+                  placeholder="Jira Project"
+                  filterOption={(input: string, option: any) =>
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  style={{ width: 300 }}
+                  onChange={handleChangeJiraProject2}
+                />
+              </Col>
+              <Col span={11}>
+                <Form.Item name="projects">
+                  <Select
+                    options={projectOptions}
+                    mode="multiple"
+                    popupClassName="capitalize"
+                    placeholder="Project"
+                    filterOption={(input: string, option: any) =>
+                      option.label.toLowerCase().includes(input.toLowerCase())
+                    }
+                    style={{ width: 300 }}
+                    allowClear={true}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={2}>
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  icon={<PlusOutlined />}
+                />
+              </Col>
+            </Row>
+          </Form>
         </Space>
       )}
       scroll={{ x: 'max-content' }}
