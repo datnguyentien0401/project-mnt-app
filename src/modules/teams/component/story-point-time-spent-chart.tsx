@@ -31,9 +31,9 @@ const StoryPointTimeSpentChart = ({
     return map
   }, new Map<string, string>())
 
-  let member = ''
-  const mouseEnterHandler = (key: string, e?: any) => {
-    member = key
+  let tooltipValue = ''
+  const mouseEnterHandler = (e: any) => {
+    tooltipValue = e.value
   }
   const CustomTooltip = ({
     active,
@@ -42,17 +42,7 @@ const StoryPointTimeSpentChart = ({
     active?: any
     payload?: any
   }) => {
-    return (
-      <div>
-        {payload
-          .filter((item: any) => item.name === member)
-          .map((item: any) => (
-            <>
-              <CusTooltip item={item} />
-            </>
-          ))}
-      </div>
-    )
+    return <CusTooltip payload={payload} value={tooltipValue} />
   }
 
   return (
@@ -84,11 +74,7 @@ const StoryPointTimeSpentChart = ({
               name={memberNameById.get(member.jiraMemberId)}
               stroke={stringToColor(member.jiraMemberId)}
               activeDot={{
-                onMouseOver: (_, e) =>
-                  mouseEnterHandler(
-                    memberNameById.get(member.jiraMemberId) || '',
-                    e,
-                  ),
+                onMouseOver: (_, e) => mouseEnterHandler(e),
                 onMouseLeave: () => mouseEnterHandler(''),
               }}
             >

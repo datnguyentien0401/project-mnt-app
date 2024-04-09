@@ -46,9 +46,9 @@ const ProjectChart = ({
     return map
   }, new Map<string, string>())
 
-  let projectName = ''
-  const mouseEnterHandler = (key: string, e?: any) => {
-    projectName = key
+  let tooltipValue = ''
+  const mouseEnterHandler = (e: any) => {
+    tooltipValue = e.value
   }
   const CustomTooltip = ({
     active,
@@ -57,17 +57,7 @@ const ProjectChart = ({
     active?: any
     payload?: any
   }) => {
-    return (
-      <div>
-        {payload
-          .filter((item: any) => item.name === projectName)
-          .map((item: any) => (
-            <>
-              <CusTooltip item={item} />
-            </>
-          ))}
-      </div>
-    )
+    return <CusTooltip payload={payload} value={tooltipValue} />
   }
 
   return (
@@ -85,7 +75,7 @@ const ProjectChart = ({
           <YAxis />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          {projectIds.map((projectId, index) => (
+          {projectIds.map((projectId, _) => (
             <Line
               key={`${projectId}.${lineChartType}`}
               type="monotone"
@@ -94,8 +84,7 @@ const ProjectChart = ({
               stroke={stringToColor(projectId)}
               legendType={'plainline'}
               activeDot={{
-                onMouseOver: (_, e) =>
-                  mouseEnterHandler(projectNameById.get(projectId) || '', e),
+                onMouseOver: (_, e) => mouseEnterHandler(e),
                 onMouseLeave: () => mouseEnterHandler(''),
               }}
             >

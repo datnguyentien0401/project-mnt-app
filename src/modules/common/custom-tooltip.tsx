@@ -1,8 +1,14 @@
 const CusTooltip = ({
-  item,
+  payload,
+  value,
 }: {
-  item: { name: string; value: string | number }
+  payload: any
+  value: string | number
 }) => {
+  const tooltipItems = payload.filter((item: any) => item.value === value)
+  if (!tooltipItems.length) {
+    return ''
+  }
   return (
     <div
       style={{
@@ -11,7 +17,13 @@ const CusTooltip = ({
         padding: 10,
       }}
     >
-      {item.name}: {item.value}
+      {tooltipItems.map((item: any) => (
+        <>
+          <div>
+            {item.name}: {item.value}
+          </div>
+        </>
+      ))}
     </div>
   )
 }
