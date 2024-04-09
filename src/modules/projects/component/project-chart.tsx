@@ -82,6 +82,7 @@ const ProjectChart = ({
               dataKey={`${projectId}.${lineChartType}`}
               name={projectNameById.get(projectId)}
               stroke={stringToColor(projectId)}
+              strokeWidth={3}
               legendType={'plainline'}
               activeDot={{
                 onMouseOver: (_, e) => mouseEnterHandler(e),
