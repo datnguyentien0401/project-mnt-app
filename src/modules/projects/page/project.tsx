@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { Card, Select, Spin } from 'antd'
 import ProjectTable from '@/modules/projects/component/project-table'
 import ProjectSearchForm from '@/modules/projects/component/project-search-form'
-import { type ProjectStatistic } from '@/types/common'
+import { ProjectSearchType, type ProjectStatistic } from '@/types/common'
 import ProjectChart from '@/modules/projects/component/project-chart'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
@@ -45,6 +45,7 @@ const ProjectList = () => {
 
   const fetchProjectStatistic = async (
     projectIds: string[],
+    type: ProjectSearchType,
     fromDate: any,
     toDate: any,
   ) => {
@@ -53,6 +54,7 @@ const ProjectList = () => {
     }
     const data = await searchProject(
       projectIds,
+      type,
       fromDate.format('YYYYMMDD'),
       toDate.format('YYYYMMDD'),
     )
@@ -62,16 +64,39 @@ const ProjectList = () => {
 
   const onSearch = async (values: Record<string, any>) => {
     setIsFetching(true)
+    const chartType = values.type
+    let searchType: ProjectSearchType
+    switch (chartType) {
+      case 'totalTimeSpentMD':
+        searchType = ProjectSearchType.TIME_SPENT_MD
+        break
+      case 'totalTimeSpentMM':
+        searchType = ProjectSearchType.TIME_SPENT_MM
+        break
+      case 'totalStoryPoint':
+        searchType = ProjectSearchType.STORY_POINT
+        break
+      case 'totalResolvedIssue':
+        searchType = ProjectSearchType.RESOLVED_ISSUE
+        break
+      default:
+        searchType = ProjectSearchType.RESOLVED_ISSUE
+    }
+
     await fetchProjectStatistic(
       values.projectId || projectOptions.map((opt) => opt.value),
+      searchType,
       values.fromDate,
       values.toDate,
     )
+    setLineChartType(chartType)
     setIsFetching(false)
   }
 
   const handleChangeJiraProject = async (jiraProjects: any[]) => {
     setProjectOptions([])
+    setChartData([])
+    setTableData([])
     if (jiraProjects.length > 0) {
       setIsFetching(true)
       const epics = (await getAllEpic(jiraProjects)) || []
@@ -108,7 +133,6 @@ const ProjectList = () => {
               <ProjectSearchForm
                 initialValues={initialValues}
                 onSubmit={onSearch}
-                callback={setLineChartType}
                 projectOptions={projectOptions}
               />
               <ProjectChart data={chartData} lineChartType={lineChartType} />

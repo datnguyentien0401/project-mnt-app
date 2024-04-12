@@ -1,5 +1,6 @@
 import axios from 'axios'
 import AppConfig from '@/config'
+import { ProjectSearchType } from '@/types/common'
 
 const baseUrl = AppConfig.API_URL
 
@@ -18,6 +19,7 @@ export const getAllEpic = async (
 
 export const searchProject = async (
   projectIds: string[],
+  type: ProjectSearchType,
   fromDate: string,
   toDate: string,
 ) => {
@@ -25,6 +27,7 @@ export const searchProject = async (
   const response = await axios.get(`${baseUrl}/api/v1/projects/epic/search`, {
     params: {
       fromDate: fromDate,
+      type: type,
       toDate: toDate,
       epicIds: epicIdsStr,
     },

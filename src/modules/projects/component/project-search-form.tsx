@@ -6,14 +6,12 @@ interface Props {
   initialValues: Record<string, any>
   projectOptions: any[]
   onSubmit: (values: Record<string, any>) => void
-  callback: Function
 }
 
 const ProjectForm: FC<Props> = ({
   initialValues,
   projectOptions,
   onSubmit,
-  callback,
 }) => {
   const [form] = Form.useForm()
 
@@ -61,7 +59,6 @@ const ProjectForm: FC<Props> = ({
                     label: 'Story Point',
                   },
                 ]}
-                onChange={(val) => callback(val)}
                 defaultValue=""
                 popupClassName="capitalize"
               />
