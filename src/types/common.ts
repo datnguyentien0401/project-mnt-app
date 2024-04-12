@@ -51,3 +51,10 @@ export interface Option {
   label: string
   value: string | number
 }
+
+export enum ProjectSearchType {
+  TIME_SPENT_MD = 'TIME_SPENT_MD',
+  TIME_SPENT_MM = 'TIME_SPENT_MM',
+  RESOLVED_ISSUE = 'RESOLVED_ISSUE',
+  STORY_POINT = 'STORY_POINT',
+}
