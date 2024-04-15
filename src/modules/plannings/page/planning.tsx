@@ -1,23 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import {
-  Button,
-  Card,
-  Col,
-  Input,
-  Row,
-  Space,
-  Spin,
-  notification,
-  Select,
-} from 'antd'
-import {
-  CopyOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  SaveOutlined,
-} from '@ant-design/icons'
+import { Button, Card, Col, Input, Row, Space, Spin, notification } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import AnnualLeaveTable from '@/modules/plannings/component/annual-leave-table'
@@ -37,6 +21,7 @@ import {
   getAllJiraProject,
   getProjectRemaining,
 } from '@/lib/api/project'
+import PlanningTitle from '@/modules/plannings/component/PlanningTitle'
 
 const columnForTotalRequiredWorkforce = [
   'remainingTime',
@@ -145,7 +130,7 @@ const Planning = () => {
     })
   }
 
-  const onRemoveTable = async (tableKey: number) => {
+  const onRemoveTable = async (tableKey: string | number) => {
     const removedTable = tableList.find((table) => table.key === tableKey)
     if (removedTable.id) {
       await deletePlanning(removedTable.id)
@@ -307,7 +292,7 @@ const Planning = () => {
 
     const updatedAvailableWorkingData = data.map((item) => {
       if (item.disable) {
-        if (item.team === 'Total AL (MM)') {
+        if (item.team === 'Workforce(MM)') {
           return {
             ...item,
             ...totalWorkforceMMs.reduce(
@@ -421,6 +406,7 @@ const Planning = () => {
     })
   }
 
+  console.log(tableList)
   return (
     <>
       <MainLayout headerName="Planning">
@@ -447,54 +433,15 @@ const Planning = () => {
             <Card
               style={{ marginBottom: '20px' }}
               title={
-                <Space
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Space className="justify-start">
-                    {editNameKey != table.key && table.name}
-                    {editNameKey === table.key && (
-                      <Input
-                        defaultValue={table.name}
-                        onChange={(event) =>
-                          updateTables({ ...table, name: event.target.value })
-                        }
-                        placeholder="Enter table name"
-                      />
-                    )}
-                    <Button
-                      onClick={() => setEditNameKey(table.key)}
-                      type="default"
-                      icon={<EditOutlined />}
-                    />
-                  </Space>
-                  <Space className="justify-end">
-                    <Button
-                      onClick={() =>
-                        onCloneTable(table, `[Clone] ${table.name}`)
-                      }
-                      type="default"
-                      icon={<CopyOutlined />}
-                      className="align-left"
-                    />
-                    <Button
-                      onClick={() => {
-                        onSave(table.key)
-                      }}
-                      type="primary"
-                      icon={<SaveOutlined />}
-                      className="align-left"
-                    />
-                    <Button
-                      onClick={() => onRemoveTable(table.key)}
-                      icon={<DeleteOutlined />}
-                      className="align-left"
-                    />
-                  </Space>
-                </Space>
+                <PlanningTitle
+                  table={table}
+                  editNameKey={editNameKey}
+                  onChangeTableNameInput={updateTables}
+                  onSaveTable={onSave}
+                  onCloneTable={onCloneTable}
+                  onRemoveTable={onRemoveTable}
+                  onEditTableName={setEditNameKey}
+                />
               }
             >
               <PlanningSearchForm
