@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { Button, Card, Col, Input, Row, Space, Spin, notification } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
@@ -217,9 +217,7 @@ const Planning = () => {
         const curDate = dayjs()
         return {
           id: uuidv4(),
-          schedule: curDate,
           startDate: curDate,
-          tqa: curDate,
           dueDate: item.dueDate,
           status: item.status,
           project: item.epicName,
@@ -266,6 +264,26 @@ const Planning = () => {
         return table
       }),
     )
+  }
+
+  function updateSearchDate(table: any, fromDate: Dayjs, toDate: Dayjs) {
+    updateTables({
+      ...table,
+      fromDate: fromDate,
+      toDate: toDate,
+      availableWorkingData: [
+        {
+          id: uuidv4(),
+          team: 'Workforce(MD)',
+          disable: true,
+        },
+        {
+          id: uuidv4(),
+          team: 'Workforce(MM)',
+          disable: true,
+        },
+      ],
+    })
   }
 
   function onSetAvailableWorkingData(table: any, data: any[], columns: any[]) {
@@ -406,7 +424,6 @@ const Planning = () => {
     })
   }
 
-  console.log(tableList)
   return (
     <>
       <MainLayout headerName="Planning">
@@ -447,11 +464,8 @@ const Planning = () => {
               <PlanningSearchForm
                 fromDate={table.fromDate}
                 toDate={table.toDate}
-                setFromDate={(fromDate) => {
-                  updateTables({ ...table, fromDate: fromDate })
-                }}
-                setToDate={(toDate) => {
-                  updateTables({ ...table, toDate: toDate })
+                setDateRange={(fromDate: Dayjs, toDate: Dayjs) => {
+                  updateSearchDate(table, fromDate, toDate)
                 }}
               />
 

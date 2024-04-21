@@ -18,7 +18,6 @@ import { Option } from '@/types/common'
 import { getAllEpic } from '@/lib/api/project'
 
 const numberInputColumn = ['priority', 'buffer', 'actualWorkforce']
-const dateInputColumn = ['schedule', 'tqa', 'startDate']
 
 const RequiredWorkforceTable = ({
   data = [],
@@ -49,7 +48,7 @@ const RequiredWorkforceTable = ({
           }
         ) : (
           <DatePicker
-            value={dayjs(text)}
+            value={text ? dayjs(text) : null}
             onChange={(value) => onChange('schedule', record.id, value)}
           />
         )
@@ -69,7 +68,7 @@ const RequiredWorkforceTable = ({
           }
         ) : (
           <DatePicker
-            value={dayjs(text)}
+            value={text ? dayjs(text) : null}
             onChange={(value) => onChange('tqa', record.id, value)}
           />
         )
@@ -281,10 +280,8 @@ const RequiredWorkforceTable = ({
     const newRow = columns.reduce((row: any, column: any) => {
       if (numberInputColumn.includes(column.key)) {
         row[column.key] = 0
-      } else if (dateInputColumn.includes(column.key)) {
+      } else if ('startDate' === column.key) {
         row[column.key] = dayjs()
-      } else {
-        row[column.key] = ''
       }
       return row
     }, {})

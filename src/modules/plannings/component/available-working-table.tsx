@@ -9,6 +9,7 @@ interface WorkingWeek {
   key: string
   year: number
   week: string
+  workforce: number
 }
 
 const AvailableWorkingTable = ({
@@ -58,12 +59,12 @@ const AvailableWorkingTable = ({
     },
   ]
 
-  function getWorkingMonth(fromDate: any, toDate: any): any[] {
-    const numOfMonths = countMonth(new Date(fromDate), new Date(toDate))
+  function getWorkingMonth(fromDate: Dayjs, toDate: Dayjs): any[] {
+    const numOfMonths = countMonth(fromDate.toDate(), toDate.toDate())
 
     let result: any[] = [
-      ...getWorkingWeeksInMonth(fromDate, false).map((workingWeek) =>
-        getWorkingWeekColumns(workingWeek),
+      ...getWorkingWeeksInMonth(fromDate.toDate(), toDate.toDate(), false).map(
+        (workingWeek) => toWorkingWeekColumns(workingWeek),
       ),
       getTotalWeekColumn(fromDate),
     ]
@@ -71,8 +72,8 @@ const AvailableWorkingTable = ({
       fromDate = fromDate.add(1, 'month')
       result = [
         ...result,
-        ...getWorkingWeeksInMonth(fromDate, true).map((workingWeek) =>
-          getWorkingWeekColumns(workingWeek),
+        ...getWorkingWeeksInMonth(fromDate.toDate(), toDate.toDate(), true).map(
+          (workingWeek) => toWorkingWeekColumns(workingWeek),
         ),
         getTotalWeekColumn(fromDate),
       ]
@@ -80,11 +81,12 @@ const AvailableWorkingTable = ({
     return result
   }
 
-  function getWorkingWeekColumns(workingWeek: WorkingWeek) {
+  function toWorkingWeekColumns(workingWeek: WorkingWeek) {
     return {
       title: workingWeek.year + ' ' + workingWeek.week,
       key: workingWeek.key,
       dataIndex: workingWeek.key,
+      value: workingWeek.workforce,
       render: (text: any, record: any) => {
         return record.disable ? (
           text
@@ -111,22 +113,41 @@ const AvailableWorkingTable = ({
   }
 
   function getWorkingWeeksInMonth(
-    dateInput: any,
+    fromDate: Date,
+    toDate: Date,
     isStartMonth: boolean,
   ): WorkingWeek[] {
     const workingWeeks = []
-    const monday = new Date(dateInput)
-    const friday = new Date(monday)
+    const monday = new Date(fromDate)
+    const friday = new Date(fromDate)
     if (isStartMonth) {
+      //set monday = first day of month
       monday.setDate(1)
     } else {
       while (friday.getDay() !== 5) {
+        // set friday = first friday after from date
         friday.setDate(friday.getDate() + 1)
       }
-      workingWeeks.push(getWorkingWeek(monday, friday))
-      if (dayjs(friday).format('YYYYMM') > dayjs(monday).format('YYYYMM')) {
+
+      if (
+        dayjs(friday).format('YYYYMMDD') >= dayjs(toDate).format('YYYYMMDD')
+      ) {
+        workingWeeks.push(
+          toWorkingWeekFormatted(
+            monday,
+            toDate,
+            (toDate.getDay() - (friday.getDay() - 4) + 1) * 0.9,
+          ),
+        )
         return workingWeeks
       }
+
+      if (dayjs(friday).format('YYYYMM') > dayjs(monday).format('YYYYMM')) {
+        workingWeeks.push(toWorkingWeekFormatted(monday, friday))
+        return workingWeeks
+      }
+
+      workingWeeks.push(toWorkingWeekFormatted(monday, friday))
       monday.setDate(friday.getDate() + 3)
     }
 
@@ -134,26 +155,45 @@ const AvailableWorkingTable = ({
       monday.setDate(monday.getDate() + 1)
     }
 
-    while (
-      dayjs(monday).format('YYYYMM') <= dayjs(dateInput).format('YYYYMM')
-    ) {
+    if (dayjs(monday).format('YYYYMMDD') > dayjs(toDate).format('YYYYMMDD')) {
+      return workingWeeks
+    }
+
+    while (dayjs(monday).format('YYYYMM') <= dayjs(fromDate).format('YYYYMM')) {
       friday.setDate(monday.getDate() + 4)
-      workingWeeks.push(getWorkingWeek(monday, friday))
+      if (
+        dayjs(friday).format('YYYYMMDD') >= dayjs(toDate).format('YYYYMMDD')
+      ) {
+        workingWeeks.push(
+          toWorkingWeekFormatted(
+            monday,
+            toDate,
+            (toDate.getDay() - monday.getDay() + 1) * 0.9,
+          ),
+        )
+        break
+      }
+      workingWeeks.push(toWorkingWeekFormatted(monday, friday))
       monday.setDate(monday.getDate() + 7)
     }
     return workingWeeks
   }
 
-  function getWorkingWeek(monday: Date, friday: Date): WorkingWeek {
+  function toWorkingWeekFormatted(
+    fromDate: Date,
+    toDate: Date,
+    workforce?: number,
+  ): WorkingWeek {
     return {
       key:
-        dayjs(monday.toLocaleDateString()).format('YYYYMMDD') +
-        dayjs(friday.toLocaleDateString()).format('YYYYMMDD'),
-      year: monday.getFullYear(),
+        dayjs(fromDate.toLocaleDateString()).format('YYYYMMDD') +
+        dayjs(toDate.toLocaleDateString()).format('YYYYMMDD'),
+      year: fromDate.getFullYear(),
       week:
-        dayjs(monday.toLocaleDateString()).format('DD/MM') +
+        dayjs(fromDate.toLocaleDateString()).format('DD/MM') +
         '-' +
-        dayjs(friday.toLocaleDateString()).format('DD/MM'),
+        dayjs(toDate.toLocaleDateString()).format('DD/MM'),
+      workforce: workforce || 4.5,
     }
   }
 
@@ -184,13 +224,14 @@ const AvailableWorkingTable = ({
         return row
       }
       if (!column.key.startsWith('total')) {
-        row[column.key] = 4.5
+        console.log(column)
+        row[column.key] = column.value || 4.5
         return row
       }
       const month = column.key.toString().substring(5)
       row[column.key] = columns.reduce((sum, col) => {
         if (col.key.startsWith(month)) {
-          return sum + 4.5
+          return sum + col.value || 4.5
         }
         return sum
       }, 0)

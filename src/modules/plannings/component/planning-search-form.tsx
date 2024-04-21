@@ -5,13 +5,11 @@ import dayjs, { Dayjs } from 'dayjs'
 const PlanningSearchForm = ({
   fromDate,
   toDate,
-  setFromDate,
-  setToDate,
+  setDateRange,
 }: {
   fromDate: any
   toDate: any
-  setFromDate: (fromDate: Dayjs) => void
-  setToDate: (fromDate: Dayjs) => void
+  setDateRange: (fromDate: Dayjs, toDate: Dayjs) => void
 }) => {
   const [form] = Form.useForm()
   const initialValues = useMemo(() => {
@@ -38,11 +36,9 @@ const PlanningSearchForm = ({
                 value={fromDate}
                 onChange={(value) => {
                   if (value) {
-                    setFromDate(value)
-                    form.setFieldValue(
-                      'toDate',
-                      value.add(1, 'month').endOf('month'),
-                    )
+                    const toDateValue = value.add(1, 'month').endOf('month')
+                    form.setFieldValue('toDate', toDateValue)
+                    setDateRange(value, toDateValue)
                   }
                 }}
               />
@@ -66,7 +62,7 @@ const PlanningSearchForm = ({
                       form.setFieldValue('toDate', '')
                       alert('Date range is invalid!')
                     } else {
-                      setToDate(value)
+                      setDateRange(form.getFieldValue('fromDate'), value)
                     }
                   }
                 }}
