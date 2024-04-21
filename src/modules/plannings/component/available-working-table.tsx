@@ -224,7 +224,6 @@ const AvailableWorkingTable = ({
         return row
       }
       if (!column.key.startsWith('total')) {
-        console.log(column)
         row[column.key] = column.value || 4.5
         return row
       }
