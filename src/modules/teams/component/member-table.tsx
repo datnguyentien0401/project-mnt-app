@@ -25,10 +25,40 @@ const MemberTable = ({
     setPageSize(size)
   }
 
+  const columns: any[] = [
+    {
+      title: 'Team',
+      render: (text: any, record: any) => record.team.name,
+      sorter: (a: any, b: any) => a.team.name.localeCompare(b.team.name),
+    },
+    {
+      title: 'Jira ID',
+      dataIndex: 'jiraMemberId',
+      key: 'jiraMemberId',
+      sorter: (a: any, b: any) => a.jiraMemberId.localeCompare(b.jiraMemberId),
+    },
+    {
+      title: 'Member',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+    },
+    {
+      title: '-',
+      render: (text: string, record: any) => (
+        <Button
+          icon={<DeleteOutlined />}
+          onClick={() => onRemoveMember(record.id)}
+        />
+      ),
+    },
+  ]
+
   return (
     <>
       <Table
         dataSource={dataSource}
+        columns={columns}
         bordered={true}
         pagination={{
           current: currentPage,
@@ -44,27 +74,7 @@ const MemberTable = ({
             form={form}
           />
         )}
-      >
-        <Table.Column
-          title="Team"
-          render={(text: string, record: any) => record.team.name}
-        />
-        <Table.Column
-          title="Jira ID"
-          dataIndex="jiraMemberId"
-          key="jiraMemberId"
-        />
-        <Table.Column title="Member" dataIndex="name" key="name" />
-        <Table.Column
-          title="-"
-          render={(text: string, record: any) => (
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => onRemoveMember(record.id)}
-            />
-          )}
-        />
-      </Table>
+      />
     </>
   )
 }

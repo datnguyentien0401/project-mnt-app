@@ -55,8 +55,18 @@ const TeamTable = ({
         </Space>
       )}
     >
-      <Table.Column title="Id" dataIndex="id" key="id" />
-      <Table.Column title="Team" dataIndex="name" key="name" />
+      <Table.Column
+        title="Id"
+        dataIndex="id"
+        key="id"
+        sorter={(a: any, b: any) => a.id - b.id}
+      />
+      <Table.Column
+        title="Team"
+        dataIndex="name"
+        key="name"
+        sorter={(a: any, b: any) => a.name.localeCompare(b.name)}
+      />
       <Table.Column
         title="-"
         render={(text: any, record: any) => (
