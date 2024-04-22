@@ -68,6 +68,12 @@ const TeamTable = ({
         sorter={(a: any, b: any) => a.name.localeCompare(b.name)}
       />
       <Table.Column
+        title="Number of members"
+        dataIndex="numberOfMembers"
+        key="numberOfMembers"
+        sorter={(a: any, b: any) => a.numberOfMembers - b.numberOfMembers}
+      />
+      <Table.Column
         title="-"
         render={(text: any, record: any) => (
           <Button
