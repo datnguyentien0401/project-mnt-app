@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from 'recharts'
 import { stringToColor } from '@/utils/helper'
-import CustomTooltip from '@/modules/common/custom-tooltip'
 import CusTooltip from '@/modules/common/custom-tooltip'
 
 const { Title } = Typography

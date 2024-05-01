@@ -10,7 +10,7 @@ import type { MenuProps } from 'antd'
 type MenuItem = Required<MenuProps>['items'][number]
 
 const mapLinkToMenuItem = (link: AppMenu): MenuItem => ({
-  key: link.href || link.label,
+  key: link.href ?? link.label,
   icon: link.icon ? (
     <Icon className="[&_span]:text-base" component={link.icon} />
   ) : undefined,

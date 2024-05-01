@@ -193,7 +193,7 @@ const AvailableWorkingTable = ({
         dayjs(fromDate.toLocaleDateString()).format('DD/MM') +
         '-' +
         dayjs(toDate.toLocaleDateString()).format('DD/MM'),
-      workforce: workforce || 4.5,
+      workforce: workforce ?? 4.5,
     }
   }
 

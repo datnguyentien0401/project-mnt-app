@@ -1,4 +1,4 @@
-import axios, { HttpStatusCode } from 'axios'
+import axios from 'axios'
 import AppConfig from '@/config'
 
 const baseUrl = AppConfig.API_URL

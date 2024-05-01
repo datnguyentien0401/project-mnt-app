@@ -1,4 +1,4 @@
-import axios, { HttpStatusCode } from 'axios'
+import axios from 'axios'
 import AppConfig from '@/config'
 import { MemberRequest } from '@/types/common'
 
@@ -12,7 +12,7 @@ const headers = {
 }
 
 export const getAllMembersByTeamId = async (teamId: number) => {
-  const response = await axios.get(`${baseUrl}${teamPath}/team/${teamId}`)
+  const response = await axios.get(`${baseUrl}${teamPath}/teams/${teamId}`)
   return response.data
 }
 

@@ -1,5 +1,5 @@
-import axios, { HttpStatusCode } from 'axios'
-import dayjs, { Dayjs } from 'dayjs'
+import axios from 'axios'
+import dayjs from 'dayjs'
 import AppConfig from '@/config'
 import { TeamRequest } from '@/types/common'
 

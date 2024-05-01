@@ -16,7 +16,7 @@ const useSidebarMenu = () => {
     flatMenus = flatMenus.flatMap((item) => item.children || item)
 
     const activeMenu = flatMenus.find((item) => {
-      const url = new URL(item.href || '', window.location.origin)
+      const url = new URL(item.href ?? '', window.location.origin)
       return router.route?.startsWith(url.pathname)
     })
 
