@@ -77,4 +77,4 @@ function LayoutSidebar() {
   )
 }
 
-export default memo(LayoutSidebar)
+export default LayoutSidebar

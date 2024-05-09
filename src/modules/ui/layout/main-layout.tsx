@@ -1,9 +1,7 @@
 import { Layout, Space, Typography } from 'antd'
 import clsx from 'clsx'
-import { useSession } from 'next-auth/react'
 import useSidebarCollapse from '@/hooks/useSidebarCollapse'
 import Sidebar from '@/modules/ui/layout/components/Sidebar'
-import Loading from './components/loading'
 import type { FC, ReactNode } from 'react'
 
 const { Content, Footer } = Layout
@@ -16,11 +14,6 @@ interface Props {
 
 const MainLayout: FC<Props> = ({ children, headerName }) => {
   const { isCollapsed } = useSidebarCollapse()
-  const { status } = useSession()
-
-  if (status === 'loading') {
-    return <Loading className="h-screen" />
-  }
 
   return (
     <Layout>

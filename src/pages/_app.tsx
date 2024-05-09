@@ -3,7 +3,6 @@ import 'antd/dist/reset.css'
 import '../styles/globals.css'
 
 import { useState, useEffect } from 'react'
-import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import NiceModal from '@ebay/nice-modal-react'
 import { ConfigProvider } from 'antd'
@@ -57,17 +56,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   }, [router.asPath, router.events])
 
   return (
-    <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient}>
-        <ConfigProvider theme={antdThemeConfig} locale={enUS}>
-          <StyleProvider hashPriority="high">
-            <NiceModal.Provider>
-              <Component {...pageProps} />
-            </NiceModal.Provider>
-          </StyleProvider>
-        </ConfigProvider>
-      </QueryClientProvider>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider theme={antdThemeConfig} locale={enUS}>
+        <StyleProvider hashPriority="high">
+          <NiceModal.Provider>
+            <Component {...pageProps} />
+          </NiceModal.Provider>
+        </StyleProvider>
+      </ConfigProvider>
+    </QueryClientProvider>
   )
 }
 

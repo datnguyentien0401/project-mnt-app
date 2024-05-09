@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
 import { allMenus, getMenus } from '@/utils/menu'
 import { type AppMenu } from '@/types/common'
 
 const useSidebarMenu = () => {
   const router = useRouter()
-  const { data: session } = useSession()
 
   const userMenus: AppMenu[] = useMemo(() => getMenus(), [])
 
@@ -16,8 +14,7 @@ const useSidebarMenu = () => {
     flatMenus = flatMenus.flatMap((item) => item.children || item)
 
     const activeMenu = flatMenus.find((item) => {
-      const url = new URL(item.href ?? '', window.location.origin)
-      return router.route?.startsWith(url.pathname)
+      return router.route?.startsWith(item.href ?? '')
     })
 
     return activeMenu || undefined

@@ -19,7 +19,6 @@
     "antd": "^5.12.4",
     "axios": "^1.6.2",
     "next": "13.5.6",
-    "next-auth": "^4.24.5",
     "next-seo": "^6.5.0",
     "nprogress": "^0.2.0",
     "prettier": "^3.1.1",
