@@ -10,12 +10,12 @@ const OverallTeamChart = ({ data }: { data: any[] }) => {
         <Title level={3}>Percentage of resolved issue</Title>
       </Space>
       <Space className="w-full justify-center">
-        <PieChart width={500} height={500}>
+        <PieChart width={700} height={500}>
           <Pie
             data={data}
             dataKey="resolvedIssuePercentage"
             nameKey="team"
-            label={(value) => value.value.toFixed(1)}
+            label={(value) => value.team + ' - ' + value.value.toFixed(1) + '%'}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={randomColor()} />

@@ -13,6 +13,7 @@ import { getTimerangeByYearAndTerm } from '@/utils/helper'
 const OverallTeam = () => {
   const [isFetching, setIsFetching] = useState(false)
   const [data, setData] = useState<any[]>([])
+  const [monthsOfTerm, setMonthsOfTerm] = useState<number>(12)
 
   const totalResolveIssueAllTeam = data.reduce(
     (totalResolveIssueAllTeam, item) => {
@@ -22,6 +23,47 @@ const OverallTeam = () => {
     0,
   )
 
+  const totalAvgResolveIssueAllTeam = data.reduce(
+    (totalResolveIssueAllTeam, item) => {
+      totalResolveIssueAllTeam += item.avgResolvedIssue
+      return totalResolveIssueAllTeam
+    },
+    0,
+  )
+
+  const totalAvgStoryPointAllTeam = data.reduce(
+    (totalResolveIssueAllTeam, item) => {
+      totalResolveIssueAllTeam += item.avgStoryPoint
+      return totalResolveIssueAllTeam
+    },
+    0,
+  )
+
+  const totalAvgTimeSpentAllTeam = data.reduce(
+    (totalResolveIssueAllTeam, item) => {
+      totalResolveIssueAllTeam += item.avgTimeSpent
+      return totalResolveIssueAllTeam
+    },
+    0,
+  )
+
+  const avgTableData = [
+    ...data,
+    {
+      team: 'Total',
+      avgResolvedIssue: totalAvgResolveIssueAllTeam,
+      avgStoryPoint: totalAvgStoryPointAllTeam,
+      avgTimeSpent: totalAvgTimeSpentAllTeam,
+    },
+    {
+      team: 'Avg',
+      totalResolvedIssue: totalResolveIssueAllTeam / monthsOfTerm,
+      avgResolvedIssue: totalAvgResolveIssueAllTeam / monthsOfTerm,
+      avgStoryPoint: totalAvgStoryPointAllTeam / monthsOfTerm,
+      avgTimeSpent: totalAvgTimeSpentAllTeam / monthsOfTerm,
+    },
+  ]
+
   const resolvedIssueData = data.map((item) => {
     return {
       ...item,
@@ -30,12 +72,29 @@ const OverallTeam = () => {
     }
   })
 
+  const resolvedIssueTableData = [
+    ...resolvedIssueData,
+    {
+      team: 'Total',
+      totalResolvedIssue: totalResolveIssueAllTeam,
+    },
+    {
+      team: 'Avg',
+      totalResolvedIssue: totalResolveIssueAllTeam / monthsOfTerm,
+    },
+  ]
+
   async function onSearch(year: string, term: Term) {
     const timeRange = getTimerangeByYearAndTerm(year, term)
     setIsFetching(true)
     const data = (await getOverall(timeRange.fromDate, timeRange.toDate)) || []
     setData(data)
     setIsFetching(false)
+    if (term == Term.FULL) {
+      setMonthsOfTerm(12)
+    } else {
+      setMonthsOfTerm(6)
+    }
   }
 
   return (
@@ -55,10 +114,10 @@ const OverallTeam = () => {
               </Row>
               <Row gutter={[6, 6]} className={'w-full pt-5'}>
                 <Col span={12}>
-                  <OverallTeamTable dataSource={resolvedIssueData} />
+                  <OverallTeamTable dataSource={resolvedIssueTableData} />
                 </Col>
                 <Col span={12}>
-                  <AvgTeamTable dataSource={data} />
+                  <AvgTeamTable dataSource={avgTableData} />
                 </Col>
               </Row>
             </>

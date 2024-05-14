@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Card, DatePicker, InputNumber, Select, Space, Spin, Table } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Card, DatePicker, Image, InputNumber, Select, Spin, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import MainLayout from '@/modules/ui/layout/main-layout'
@@ -314,7 +314,7 @@ const ProjectPlanning = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().includes(input.toLowerCase())
               }
-              style={{ width: 300 }}
+              className={'w-full'}
               onChange={(value) => handleChangeJiraProject(value)}
             />
           </Card>
@@ -326,7 +326,7 @@ const ProjectPlanning = () => {
                   popupClassName="capitalize"
                   placeholder="Project"
                   showSearch={true}
-                  style={{ width: 300 }}
+                  className={'w-full'}
                   onChange={(value) => onChangeProject(value)}
                   filterOption={(input, option) =>
                     option.label.toLowerCase().includes(input.toLowerCase())
@@ -442,6 +442,13 @@ const ProjectPlanning = () => {
               </Table>
             </>
           )}
+          <Card className="max-w-full mb-6" style={{ marginTop: '20px' }}>
+            <Image
+              src="/logic-matrix.png"
+              style={{ width: '100%', height: 'auto' }}
+              alt="Logix of matrix"
+            />
+          </Card>
         </Spin>
       </MainLayout>
     </>

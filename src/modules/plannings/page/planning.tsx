@@ -231,8 +231,8 @@ const Planning = () => {
         let totalData = initData.filter((item) => item.disable)[0]
         totalData = {
           ...totalData,
-          remainingTime: totalData.remainingTime + totalETNew,
-          requiredWorkforce: totalData.requiredWorkforce + totalETNew,
+          remainingTime: totalData?.remainingTime + totalETNew,
+          requiredWorkforce: totalData?.requiredWorkforce + totalETNew,
         }
         return [
           ...initData.filter((item) => !item.disable),
@@ -434,6 +434,8 @@ const Planning = () => {
                 type="text"
                 placeholder="Enter table name"
                 onChange={(event) => setTableName(event.target.value)}
+                max={100}
+                style={{ width: 700 }}
               />
             )}
             <Button

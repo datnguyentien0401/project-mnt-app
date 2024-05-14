@@ -31,6 +31,7 @@ const TeamView = () => {
   const [storyPointData, setStoryPointData] = useState<any[]>([])
   const [teamOptions, setTeamOptions] = useState([])
   const [term, setTerm] = useState<Term>(Term.FULL)
+  const [monthsOfTerm, setMonthsOfTerm] = useState<number>(12)
 
   useEffect(() => {
     fetchData()
@@ -49,10 +50,6 @@ const TeamView = () => {
   }
 
   async function onSearch(year: string, term: Term, teamId: number) {
-    // if (timeout) {
-    //   clearTimeout(timeout)
-    //   timeout = null
-    // }
     if (!teamId) {
       return
     }
@@ -82,7 +79,62 @@ const TeamView = () => {
     setTimeSpentData(data.timeSpentData)
     setResolvedIssueChartData(data.resolvedIssueChartData)
     setIsFetching(false)
+
+    if (term == Term.FULL) {
+      setMonthsOfTerm(12)
+    } else {
+      setMonthsOfTerm(6)
+    }
   }
+
+  function getTotalData(data: any[]): any {
+    const total: any = {}
+    data.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if (typeof total[key] === 'undefined') {
+          total[key] = 0
+        }
+        if (typeof item[key] === 'number') {
+          total[key] += item[key]
+        }
+      })
+    })
+    return { ...total, month: 'Total' }
+  }
+
+  function getAvgData(data: any): any {
+    const avg: any = {}
+    Object.keys(data).forEach((key) => {
+      if (typeof avg[key] === 'undefined') {
+        avg[key] = 0
+      }
+      if (typeof data[key] === 'number') {
+        avg[key] = (data[key] / monthsOfTerm).toFixed(2)
+      }
+    })
+    return { ...avg, month: 'Avg' }
+  }
+
+  const totalResolvedIssue = getTotalData(resolvedIssueData)
+  const resolvedIssueDataTable = [
+    ...resolvedIssueData,
+    totalResolvedIssue,
+    getAvgData(totalResolvedIssue),
+  ]
+
+  const totalTimeSpent = getTotalData(timeSpentData)
+  const timeSpentDataTable = [
+    ...timeSpentData,
+    totalTimeSpent,
+    getAvgData(totalTimeSpent),
+  ]
+
+  const totalStoryPoint = getTotalData(storyPointData)
+  const storyPointDataTable = [
+    ...storyPointData,
+    totalStoryPoint,
+    getAvgData(totalStoryPoint),
+  ]
 
   return (
     <>
@@ -123,7 +175,7 @@ const TeamView = () => {
                 <Col span={8}>
                   <Table
                     columns={columns}
-                    dataSource={resolvedIssueData}
+                    dataSource={resolvedIssueDataTable}
                     bordered={true}
                     pagination={false}
                   />
@@ -131,7 +183,7 @@ const TeamView = () => {
                 <Col span={8}>
                   <Table
                     columns={columns}
-                    dataSource={timeSpentData}
+                    dataSource={timeSpentDataTable}
                     bordered={true}
                     pagination={false}
                   />
@@ -139,7 +191,7 @@ const TeamView = () => {
                 <Col span={8}>
                   <Table
                     columns={columns}
-                    dataSource={storyPointData}
+                    dataSource={storyPointDataTable}
                     bordered={true}
                     pagination={false}
                   />

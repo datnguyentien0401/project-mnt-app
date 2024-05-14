@@ -134,7 +134,7 @@ const RequiredWorkforceTable = ({
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
-      sorter: (a: any, b: any) => a.status.localeCompare(b.status),
+      sorter: (a: any, b: any) => a.status > b.status,
       render: (text: string, record: any) => {
         return record.disable
           ? {
@@ -149,7 +149,7 @@ const RequiredWorkforceTable = ({
       title: 'NSS',
       key: 'nss',
       dataIndex: 'nss',
-      sorter: (a: any, b: any) => a.nss.localeCompare(b.nss),
+      sorter: (a: any, b: any) => a.nss > b.nss,
       render: (text: string, record: any) => {
         return record.disable ? (
           {
@@ -171,7 +171,7 @@ const RequiredWorkforceTable = ({
       title: 'Project',
       key: 'project',
       dataIndex: 'project',
-      sorter: (a: any, b: any) => a.project.localeCompare(b.project),
+      sorter: (a: any, b: any) => a.project > b.project,
       render: (text: string, record: any) => {
         return record.disable
           ? {
@@ -316,47 +316,45 @@ const RequiredWorkforceTable = ({
       columns={columns}
       dataSource={data}
       title={() => (
-        <Space className="w-full justify-end">
-          <Form form={form} autoComplete="off" onFinish={onAddRow}>
-            <Row gutter={[12, 12]}>
-              <Col span={11}>
+        <Form form={form} autoComplete="off" onFinish={onAddRow}>
+          <Row gutter={[12, 12]}>
+            <Col span={5}>
+              <Select
+                options={jiraProjectOptions}
+                mode="multiple"
+                popupClassName="capitalize"
+                placeholder="Jira Project"
+                filterOption={(input: string, option: any) =>
+                  option.label.toLowerCase().includes(input.toLowerCase())
+                }
+                onChange={handleChangeJiraProject}
+                allowClear={true}
+                className={'w-full'}
+              />
+            </Col>
+            <Col span={18}>
+              <Form.Item name="projects">
                 <Select
-                  options={jiraProjectOptions}
+                  options={projectOptions}
                   mode="multiple"
                   popupClassName="capitalize"
-                  placeholder="Jira Project"
+                  placeholder="Project"
                   filterOption={(input: string, option: any) =>
                     option.label.toLowerCase().includes(input.toLowerCase())
                   }
-                  style={{ width: 300 }}
-                  onChange={handleChangeJiraProject}
+                  allowClear={true}
                 />
-              </Col>
-              <Col span={11}>
-                <Form.Item name="projects">
-                  <Select
-                    options={projectOptions}
-                    mode="multiple"
-                    popupClassName="capitalize"
-                    placeholder="Project"
-                    filterOption={(input: string, option: any) =>
-                      option.label.toLowerCase().includes(input.toLowerCase())
-                    }
-                    style={{ width: 300 }}
-                    allowClear={true}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={2}>
-                <Button
-                  htmlType="submit"
-                  type="primary"
-                  icon={<PlusOutlined />}
-                />
-              </Col>
-            </Row>
-          </Form>
-        </Space>
+              </Form.Item>
+            </Col>
+            <Col span={1}>
+              <Button
+                htmlType="submit"
+                type="primary"
+                icon={<PlusOutlined />}
+              />
+            </Col>
+          </Row>
+        </Form>
       )}
       scroll={{ x: 'max-content' }}
     ></Table>

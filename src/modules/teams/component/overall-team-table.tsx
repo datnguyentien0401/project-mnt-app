@@ -5,7 +5,7 @@ const OverallTeamTable = ({ dataSource }: { dataSource: any[] }) => {
     <Table dataSource={dataSource} bordered={true} pagination={false}>
       <Table.Column title="Team" dataIndex="team" key="team" />
       <Table.Column
-        title="Number"
+        title="Resolve Issues"
         dataIndex="totalResolvedIssue"
         key="totalResolvedIssue"
       />
@@ -13,7 +13,7 @@ const OverallTeamTable = ({ dataSource }: { dataSource: any[] }) => {
         title="Percentage (%)"
         dataIndex="resolvedIssuePercentage"
         key="resolvedIssuePercentage"
-        render={(text: number) => text.toFixed(1)}
+        render={(text: number) => text?.toFixed(1)}
       />
     </Table>
   )

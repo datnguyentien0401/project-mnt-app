@@ -22,7 +22,7 @@ const ProjectList = () => {
     return {
       toDate: dayjs().subtract(0, 'month'),
       fromDate: dayjs().subtract(2, 'month'),
-      type: 'totalResolvedIssue',
+      type: 'totalTimeSpentMM',
     }
   }, [])
 

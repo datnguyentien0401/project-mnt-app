@@ -41,6 +41,8 @@ const PlanningTitle = ({
               onChangeTableNameInput({ ...table, name: event.target.value })
             }
             placeholder="Enter table name"
+            style={{ width: 700 }}
+            max={100}
           />
         )}
         <Button
