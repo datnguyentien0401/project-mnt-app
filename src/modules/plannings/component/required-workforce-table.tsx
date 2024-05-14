@@ -134,7 +134,7 @@ const RequiredWorkforceTable = ({
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
-      sorter: (a: any, b: any) => a.status > b.status,
+      sorter: (a: any, b: any) => a.status?.localeCompare(b.status) ?? 0,
       render: (text: string, record: any) => {
         return record.disable
           ? {
@@ -149,7 +149,7 @@ const RequiredWorkforceTable = ({
       title: 'NSS',
       key: 'nss',
       dataIndex: 'nss',
-      sorter: (a: any, b: any) => a.nss > b.nss,
+      sorter: (a: any, b: any) => a.nss?.localeCompare(b.nss) ?? 0,
       render: (text: string, record: any) => {
         return record.disable ? (
           {
@@ -171,7 +171,7 @@ const RequiredWorkforceTable = ({
       title: 'Project',
       key: 'project',
       dataIndex: 'project',
-      sorter: (a: any, b: any) => a.project > b.project,
+      sorter: (a: any, b: any) => a.project?.localeCompare(b.project) ?? 0,
       render: (text: string, record: any) => {
         return record.disable
           ? {
