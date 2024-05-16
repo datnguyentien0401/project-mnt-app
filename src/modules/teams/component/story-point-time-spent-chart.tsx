@@ -23,7 +23,7 @@ const StoryPointTimeSpentChart = ({
   title: string
   data: any[]
   members: any[]
-  yunit?: string
+  yunit?: 'MM' | 'MD' | 'Point'
 }) => {
   const memberNameById = members.reduce((map, item) => {
     map.set(item.jiraMemberId, item.name)

@@ -80,7 +80,7 @@ const OverallTeam = () => {
     },
     {
       team: 'Avg',
-      totalResolvedIssue: totalResolveIssueAllTeam / monthsOfTerm,
+      totalResolvedIssue: (totalResolveIssueAllTeam / monthsOfTerm).toFixed(1),
     },
   ]
 

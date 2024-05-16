@@ -123,6 +123,12 @@ const TeamView = () => {
   ]
 
   const totalTimeSpent = getTotalData(timeSpentData)
+  Object.keys(totalTimeSpent).forEach((key) => {
+    if (key !== 'month') {
+      totalTimeSpent[key] = parseFloat(totalTimeSpent[key].toFixed(2))
+    }
+  })
+
   const timeSpentDataTable = [
     ...timeSpentData,
     totalTimeSpent,
@@ -159,7 +165,7 @@ const TeamView = () => {
                     title={'Time spent'}
                     data={timeSpentData}
                     members={teamMembers}
-                    yunit={'MD'}
+                    yunit={'MM'}
                   />
                 </Col>
                 <Col span={8}>
