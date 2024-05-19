@@ -39,7 +39,13 @@ const ProjectChart = ({
     })
   }
 
-  const projectIds = Array.from(new Set(data.map((item) => item.projectId)))
+  const projectIds = Array.from(
+    new Set(
+      data
+        .map((item) => item.projectId)
+        .filter((projectId) => projectId !== ''),
+    ),
+  )
 
   const projectNameById = data.reduce((map, item) => {
     map.set(item.projectId, item.projectName)
@@ -47,7 +53,7 @@ const ProjectChart = ({
   }, new Map<string, string>())
 
   let tooltipValue = ''
-  const mouseEnterHandler = (e: any) => {
+  const tooltipHandler = (e: any) => {
     tooltipValue = e.value
   }
   const CustomTooltip = ({
@@ -85,8 +91,8 @@ const ProjectChart = ({
               strokeWidth={3}
               legendType={'plainline'}
               activeDot={{
-                onMouseOver: (_, e) => mouseEnterHandler(e),
-                onMouseLeave: () => mouseEnterHandler(''),
+                onMouseOver: (_, e) => tooltipHandler(e),
+                onMouseLeave: () => tooltipHandler(''),
               }}
             >
               <LabelList position="top" />

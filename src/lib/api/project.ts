@@ -7,11 +7,13 @@ const baseUrl = AppConfig.API_URL
 export const getAllEpic = async (
   jiraProject: string[] = [],
   groupEpic: boolean = true,
+  resolvedEpic: boolean = false,
 ) => {
   const response = await axios.get(`${baseUrl}/api/v1/projects/epic`, {
     params: {
       jiraProjectIds: jiraProject ? jiraProject.join(',') : '',
       groupEpic: groupEpic,
+      resolvedEpic: resolvedEpic,
     },
   })
   return response.data

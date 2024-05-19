@@ -25,7 +25,7 @@ const ProjectForm: FC<Props> = ({
         onFinish={onSubmit}
       >
         <Row gutter={[24, 8]}>
-          <Col style={{ width: '25%' }} flex="none">
+          <Col style={{ width: '100%' }} flex="none">
             <Form.Item name="projectId" label="Project">
               <Select
                 options={projectOptions}
@@ -82,10 +82,16 @@ const ProjectForm: FC<Props> = ({
               />
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              Search
-            </Button>
+          <Col style={{ width: '25%' }}>
+            <Form.Item label=" ">
+              <Button
+                type="primary"
+                htmlType="submit"
+                icon={<SearchOutlined />}
+              >
+                Search
+              </Button>
+            </Form.Item>
           </Col>
         </Row>
       </Form>

@@ -99,7 +99,7 @@ const ProjectList = () => {
     setTableData([])
     if (jiraProjects.length > 0) {
       setIsFetching(true)
-      const epics = (await getAllEpic(jiraProjects)) || []
+      const epics = (await getAllEpic(jiraProjects, true, true)) || []
       setProjectOptions(
         epics.map((epic: any) => ({
           value: epic.projectId,
@@ -123,7 +123,7 @@ const ProjectList = () => {
               filterOption={(input, option) =>
                 option.label.toLowerCase().includes(input.toLowerCase())
               }
-              style={{ width: 300 }}
+              className="w-full"
               onChange={(value) => handleChangeJiraProject(value)}
             />
           </Card>
