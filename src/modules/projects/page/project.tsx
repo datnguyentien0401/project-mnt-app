@@ -84,7 +84,9 @@ const ProjectList = () => {
     }
 
     await fetchProjectStatistic(
-      values.projectId || projectOptions.map((opt) => opt.value),
+      values.projectId && values.projectId.length
+        ? values.projectId
+        : projectOptions.map((opt) => opt.value),
       searchType,
       values.fromDate,
       values.toDate,
