@@ -87,7 +87,9 @@ const ProjectChart = ({
               type="monotone"
               dataKey={`${projectId}.${lineChartType}`}
               name={projectNameById.get(projectId)}
-              stroke={stringToColor(projectId)}
+              stroke={stringToColor(
+                projectNameById.get(projectId) ?? projectId,
+              )}
               strokeWidth={3}
               legendType={'plainline'}
               activeDot={{
