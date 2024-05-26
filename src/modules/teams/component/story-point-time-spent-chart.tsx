@@ -71,7 +71,9 @@ const StoryPointTimeSpentChart = ({
               type="monotone"
               dataKey={`${member.jiraMemberId}`}
               name={memberNameById.get(member.jiraMemberId)}
-              stroke={stringToColor(member.jiraMemberId)}
+              stroke={stringToColor(
+                memberNameById.get(member.jiraMemberId) ?? member.jiraMemberId,
+              )}
               strokeWidth={3}
               activeDot={{
                 onMouseOver: (_, e) => mouseEnterHandler(e),
