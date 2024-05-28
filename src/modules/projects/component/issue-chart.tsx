@@ -59,14 +59,17 @@ const CustomTooltip = ({
 
 const Content = ({
   name,
+  month,
   value,
 }: {
   name: string
+  month: string
   value: { resolved: number; inProgress: number; open: number }
 }) => {
   return (
     <div>
       <div>{name}</div>
+      <div>Month: {month}</div>
       <div style={{ color: 'green' }}>Resolved: {value.resolved}</div>
       <div style={{ color: 'blue' }}>In Progress: {value.inProgress}</div>
       <div style={{ color: 'red' }}>Open: {value.open}</div>
@@ -118,6 +121,7 @@ const IssueChart = ({ data }: { data: ProjectStatistic[] }) => {
       content: (
         <Content
           name={projectActive.epicName || ''}
+          month={projectActive.month || ''}
           value={{
             resolved: projectActive.totalResolvedIssue,
             open: projectActive.totalOpenIssue,
