@@ -3,12 +3,14 @@ services:
   web:
     build:
       context: ./
+    container_name: web
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
-#    command: npm run dev:prod
+      - app_data:/web
+    #    command: npm run dev:prod
     ports:
       - "3000:3000"
     environment:
       - APP_ENV=real
+volumes:
+  app_data:
+    driver: local
