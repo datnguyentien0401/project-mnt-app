@@ -10,6 +10,8 @@ import MainLayout from '@/modules/ui/layout/main-layout'
 import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
 import IssueChart from '@/modules/projects/component/issue-chart'
 
+const timeSpentChartTypes = ['totalTimeSpentMD', 'totalTimeSpentMM']
+
 const ProjectList = () => {
   const [tableData, setTableData] = useState<ProjectStatistic[]>([])
   const [chartData, setChartData] = useState<ProjectStatistic[]>([])
@@ -83,14 +85,22 @@ const ProjectList = () => {
         searchType = ProjectSearchType.RESOLVED_ISSUE
     }
 
-    await fetchProjectStatistic(
-      values.projectId && values.projectId.length
-        ? values.projectId
-        : projectOptions.map((opt) => opt.value),
-      searchType,
-      values.fromDate,
-      values.toDate,
-    )
+    if (
+      !(
+        timeSpentChartTypes.includes(lineChartType) &&
+        timeSpentChartTypes.includes(chartType)
+      )
+    ) {
+      await fetchProjectStatistic(
+        values.projectId && values.projectId.length
+          ? values.projectId
+          : projectOptions.map((opt) => opt.value),
+        searchType,
+        values.fromDate,
+        values.toDate,
+      )
+    }
+
     setLineChartType(chartType)
     setIsFetching(false)
   }
