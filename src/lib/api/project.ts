@@ -37,6 +37,25 @@ export const searchProject = async (
   return response.data
 }
 
+export const searchJiraProject = async (
+  projectIds: string[],
+  fromDate: string,
+  toDate: string,
+) => {
+  const jiraProjectIds = projectIds ? projectIds.join(',') : ''
+  const response = await axios.get(
+    `${baseUrl}/api/v1/projects/jira-project/search`,
+    {
+      params: {
+        jiraProjectIds: jiraProjectIds,
+        fromDate: fromDate,
+        toDate: toDate,
+      },
+    },
+  )
+  return response.data
+}
+
 export const getProjectRemaining = async (projectIds?: string[]) => {
   const projectIdsStr = projectIds ? projectIds.join(',') : ''
   const response = await axios.get(`${baseUrl}/api/v1/projects/remaining`, {

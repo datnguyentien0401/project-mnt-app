@@ -6,15 +6,15 @@ interface Props {
   initialValues: Record<string, any>
   projectOptions: any[]
   onSubmit: (values: Record<string, any>) => void
+  form: any
 }
 
 const ProjectForm: FC<Props> = ({
   initialValues,
   projectOptions,
   onSubmit,
+  form,
 }) => {
-  const [form] = Form.useForm()
-
   return (
     <Card className="max-w-full mb-6">
       <Form

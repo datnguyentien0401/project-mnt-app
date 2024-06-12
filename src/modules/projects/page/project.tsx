@@ -1,13 +1,18 @@
 'use client'
 import React, { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
-import { Card, Select, Spin } from 'antd'
+import { Card, Form, Select, Spin } from 'antd'
 import ProjectTable from '@/modules/projects/component/project-table'
 import ProjectSearchForm from '@/modules/projects/component/project-search-form'
 import { ProjectSearchType, type ProjectStatistic } from '@/types/common'
 import ProjectChart from '@/modules/projects/component/project-chart'
 import MainLayout from '@/modules/ui/layout/main-layout'
-import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
+import {
+  getAllEpic,
+  getAllJiraProject,
+  searchJiraProject,
+  searchProject,
+} from '@/lib/api/project'
 import IssueChart from '@/modules/projects/component/issue-chart'
 
 const timeSpentChartTypes = ['totalTimeSpentMD', 'totalTimeSpentMM']
@@ -32,9 +37,9 @@ const ProjectList = () => {
     setIsFetching(true)
     getAllJiraProject().then((data: any) =>
       setJiraProjectOptions(
-        data.map((epic: any) => ({
-          value: epic.id,
-          label: epic.name,
+        data.map((project: any) => ({
+          value: project.id,
+          label: project.name,
         })),
       ),
     )
@@ -46,20 +51,27 @@ const ProjectList = () => {
   }, [])
 
   const fetchProjectStatistic = async (
+    jiraProjectIds: string[],
     projectIds: string[],
     type: ProjectSearchType,
     fromDate: any,
     toDate: any,
   ) => {
-    if (projectIds.length == 0) {
-      return
+    let data: { totalData: []; listData: [] } = { totalData: [], listData: [] }
+    if (projectIds && projectIds.length > 0) {
+      data = await searchProject(
+        projectIds,
+        type,
+        fromDate.format('YYYYMMDD'),
+        toDate.format('YYYYMMDD'),
+      )
+    } else if (jiraProjectIds && jiraProjectIds.length > 0) {
+      data = await searchJiraProject(
+        jiraProjectIds,
+        fromDate.format('YYYYMMDD'),
+        toDate.format('YYYYMMDD'),
+      )
     }
-    const data = await searchProject(
-      projectIds,
-      type,
-      fromDate.format('YYYYMMDD'),
-      toDate.format('YYYYMMDD'),
-    )
     setTableData(data.totalData)
     setChartData(data.listData)
   }
@@ -85,21 +97,13 @@ const ProjectList = () => {
         searchType = ProjectSearchType.RESOLVED_ISSUE
     }
 
-    if (
-      !(
-        timeSpentChartTypes.includes(lineChartType) &&
-        timeSpentChartTypes.includes(chartType)
-      )
-    ) {
-      await fetchProjectStatistic(
-        values.projectId && values.projectId.length
-          ? values.projectId
-          : projectOptions.map((opt) => opt.value),
-        searchType,
-        values.fromDate,
-        values.toDate,
-      )
-    }
+    await fetchProjectStatistic(
+      values.jiraProjectId,
+      values.projectId,
+      searchType,
+      values.fromDate,
+      values.toDate,
+    )
 
     setLineChartType(chartType)
     setIsFetching(false)
@@ -122,30 +126,36 @@ const ProjectList = () => {
     }
   }
 
+  const [form] = Form.useForm()
+
   return (
     <>
       <MainLayout headerName="Project">
         <Spin spinning={isFetching}>
-          <Card className="max-w-full mb-6">
-            <Select
-              options={jiraProjectOptions}
-              mode="multiple"
-              popupClassName="capitalize"
-              placeholder="Jira Project"
-              filterOption={(input, option) =>
-                option.label.toLowerCase().includes(input.toLowerCase())
-              }
-              className="w-full"
-              onChange={(value) => handleChangeJiraProject(value)}
-            />
-          </Card>
-
+          <Form form={form} layout="vertical" autoComplete="off">
+            <Card className="max-w-full mb-6">
+              <Form.Item name="jiraProjectId">
+                <Select
+                  options={jiraProjectOptions}
+                  mode="multiple"
+                  popupClassName="capitalize"
+                  placeholder="Jira Project"
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  className="w-full"
+                  onChange={(value) => handleChangeJiraProject(value)}
+                />
+              </Form.Item>
+            </Card>
+          </Form>
           {projectOptions.length > 0 && (
             <>
               <ProjectSearchForm
                 initialValues={initialValues}
                 onSubmit={onSearch}
                 projectOptions={projectOptions}
+                form={form}
               />
               <ProjectChart data={chartData} lineChartType={lineChartType} />
               <IssueChart data={chartData} />
