@@ -158,12 +158,34 @@ const RequiredWorkforceTable = ({
             },
           }
         ) : (
-          <Input
-            value={text}
-            onChange={(event) =>
-              onChange('nss', record.id, event.target.value || '')
-            }
-          />
+          <>
+            <Input
+              value={text}
+              style={{
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              onChange={(event) =>
+                onChange('nss', record.id, event.target.value || '')
+              }
+            />
+            <br />
+            <a
+              href={text}
+              style={{
+                fontSize: 12,
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: 'inline-block',
+              }}
+            >
+              {text}
+            </a>
+          </>
         )
       },
     },
