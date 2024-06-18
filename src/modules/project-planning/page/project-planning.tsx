@@ -118,12 +118,8 @@ const ProjectPlanning = () => {
     item.startDateExpect = value
 
     let isWarning = false
-    if (
-      !value &&
-      item.dueDateExpect &&
-      item.remainingTimeExpect &&
-      item.headCountExpect
-    ) {
+    if (!value && item.dueDateET && item.remainingTimeET && item.headCountET) {
+      console.log(3)
       item.startDateET = calculateStartOrDueDate(
         new Date(item.dueDateExpect),
         item.remainingTimeExpect / (item.headCountExpect / 20),
@@ -171,9 +167,9 @@ const ProjectPlanning = () => {
     let isWarning = false
     if (
       !value &&
-      item.startDateExpect &&
+      item.startDateET &&
       item.remainingTimeET &&
-      item.headCountExpect
+      item.headCountET
     ) {
       item.dueDateET = calculateStartOrDueDate(
         new Date(item.startDateExpect),
@@ -220,12 +216,7 @@ const ProjectPlanning = () => {
     item.headCountExpect = value
 
     let isWarning = false
-    if (
-      !value &&
-      item.startDateExpect &&
-      item.remainingTimeET &&
-      item.dueDateExpect
-    ) {
+    if (!value && item.startDateET && item.remainingTimeET && item.dueDateET) {
       item.headCountET =
         item.remainingTimeET /
         (countWorkingDays(
@@ -285,7 +276,14 @@ const ProjectPlanning = () => {
       if (columnKey === 'remainingTimeExpect') {
         item.remainingTimeET = value
         item.remainingTimeExpect = value
-        if (item.startDateET && item.dueDateET && item.headCountET) {
+        if (
+          item.startDateET &&
+          item.dueDateET &&
+          item.headCountET &&
+          item.startDateExpect &&
+          item.dueDateExpect &&
+          item.headCountExpect
+        ) {
           setWarning(
             item.dueDateET !=
               calculateStartOrDueDate(
@@ -294,6 +292,15 @@ const ProjectPlanning = () => {
                 'due',
               ),
           )
+        }
+        if (!item.startDateExpect) {
+          handleStartDateExpect(item, null)
+        }
+        if (!item.dueDateExpect) {
+          handleDueDateExpect(item, null)
+        }
+        if (!item.headCountExpect) {
+          handleHeadCountExpect(item, null)
         }
       }
       return item
