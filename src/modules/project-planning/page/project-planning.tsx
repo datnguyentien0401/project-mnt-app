@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, DatePicker, Image, InputNumber, Select, Spin, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import MainLayout from '@/modules/ui/layout/main-layout'
 import {
   getAllEpic,
@@ -55,6 +55,7 @@ const ProjectPlanning = () => {
       projectId,
     ])
     if (projectRemaining) {
+      console.log(projectRemaining[0])
       setDataSource([
         {
           id: uuidv4(),
@@ -382,7 +383,7 @@ const ProjectPlanning = () => {
                     render={(text: any, record: any) => {
                       return (
                         <DatePicker
-                          value={text}
+                          value={dayjs(text)}
                           onChange={(value) =>
                             onChange('startDateExpect', record.id, value)
                           }
@@ -397,7 +398,7 @@ const ProjectPlanning = () => {
                     render={(text: any, record: any) => {
                       return (
                         <DatePicker
-                          value={text}
+                          value={dayjs(text)}
                           onChange={(value) =>
                             onChange('dueDateExpect', record.id, value)
                           }
