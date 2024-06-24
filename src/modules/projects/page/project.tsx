@@ -68,6 +68,7 @@ const ProjectList = () => {
     } else if (jiraProjectIds && jiraProjectIds.length > 0) {
       data = await searchJiraProject(
         jiraProjectIds,
+        type,
         fromDate.format('YYYYMMDD'),
         toDate.format('YYYYMMDD'),
       )

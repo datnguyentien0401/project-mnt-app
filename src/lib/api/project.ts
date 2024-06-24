@@ -39,6 +39,7 @@ export const searchProject = async (
 
 export const searchJiraProject = async (
   projectIds: string[],
+  type: ProjectSearchType,
   fromDate: string,
   toDate: string,
 ) => {
@@ -50,6 +51,7 @@ export const searchJiraProject = async (
         jiraProjectIds: jiraProjectIds,
         fromDate: fromDate,
         toDate: toDate,
+        type: type,
       },
     },
   )
