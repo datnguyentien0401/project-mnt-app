@@ -57,7 +57,9 @@ const PlanningTitle = ({
           type="default"
           icon={<CopyOutlined />}
           className="align-left"
-        />
+        >
+          Clone
+        </Button>
         <Button
           onClick={() => {
             onSaveTable(table.key)
@@ -65,12 +67,16 @@ const PlanningTitle = ({
           type="primary"
           icon={<SaveOutlined />}
           className="align-left"
-        />
+        >
+          Save
+        </Button>
         <Button
           onClick={() => onRemoveTable(table.key)}
           icon={<DeleteOutlined />}
           className="align-left"
-        />
+        >
+          Remove
+        </Button>
       </Space>
     </Space>
   )

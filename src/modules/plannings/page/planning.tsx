@@ -211,7 +211,7 @@ const Planning = () => {
 
     if (projectRemainingList.length > 0) {
       let totalETNew = 0
-
+      const defaultBuffer = 0.3
       const requiredWorkforceDataNew = projectRemainingList.map((item) => {
         totalETNew += item.timeEstimateMM
         const curDate = dayjs()
@@ -222,8 +222,8 @@ const Planning = () => {
           status: item.status,
           project: item.epicName,
           remainingTime: item.timeEstimateMM,
-          buffer: 0,
-          requiredWorkforce: item.timeEstimateMM,
+          buffer: defaultBuffer * 100,
+          requiredWorkforce: item.timeEstimateMM * (1 + defaultBuffer),
         }
       })
 

@@ -8,7 +8,6 @@ import {
   InputNumber,
   Row,
   Select,
-  Space,
   Table,
 } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
@@ -37,7 +36,8 @@ const RequiredWorkforceTable = ({
       title: 'Customer Schedule',
       key: 'schedule',
       dataIndex: 'schedule',
-      sorter: (a: any, b: any) => new Date(a.schedule) > new Date(b.schedule),
+      sorter: (a: any, b: any) =>
+        new Date(a.schedule).getTime() - new Date(b.schedule).getTime(),
       render: (text: any, record: any) => {
         return record.disable ? (
           {
@@ -58,7 +58,8 @@ const RequiredWorkforceTable = ({
       title: 'TQA or date',
       key: 'tqa',
       dataIndex: 'tqa',
-      sorter: (a: any, b: any) => new Date(a.TQA) > new Date(b.TQA),
+      sorter: (a: any, b: any) =>
+        new Date(a.TQA).getTime() - new Date(b.TQA).getTime(),
       render: (text: any, record: any) => {
         return record.disable ? (
           {
@@ -78,7 +79,8 @@ const RequiredWorkforceTable = ({
       title: 'RR date',
       key: 'dueDate',
       dataIndex: 'dueDate',
-      sorter: (a: any, b: any) => new Date(a.rrDate) > new Date(b.rrDate),
+      sorter: (a: any, b: any) =>
+        new Date(a.rrDate).getTime() - new Date(b.rrDate).getTime(),
       render: (text: string, record: any) => {
         return record.disable
           ? {
@@ -93,7 +95,8 @@ const RequiredWorkforceTable = ({
       title: 'Start date',
       key: 'startDate',
       dataIndex: 'startDate',
-      sorter: (a: any, b: any) => new Date(a.startDate) > new Date(b.startDate),
+      sorter: (a: any, b: any) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       render: (text: any, record: any) => {
         return record.disable ? (
           {
@@ -113,7 +116,10 @@ const RequiredWorkforceTable = ({
       title: 'Priority',
       key: 'priority',
       dataIndex: 'priority',
-      sorter: (a: any, b: any) => a.priority - b.priority,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.priority ?? 0) - (b.priority ?? 0)
+      },
       render: (text: any, record: any) => {
         return record.disable ? (
           {
@@ -208,14 +214,20 @@ const RequiredWorkforceTable = ({
       title: 'Remaining time',
       key: 'remainingTime',
       dataIndex: 'remainingTime',
-      sorter: (a: any, b: any) => a.remainingTime - b.remainingTime,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.remainingTime ?? 0) - (b.remainingTime ?? 0)
+      },
       render: (text: number) => (text ? text.toFixed(2) : ''),
     },
     {
       title: 'Buffer (%)',
       key: 'buffer',
       dataIndex: 'buffer',
-      sorter: (a: any, b: any) => a.buffer - b.buffer,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.buffer ?? 0) - (b.buffer ?? 0)
+      },
       render: (text: number, record: any) => {
         return record.disable ? (
           text
@@ -232,14 +244,20 @@ const RequiredWorkforceTable = ({
       title: 'Required workforce',
       key: 'requiredWorkforce',
       dataIndex: 'requiredWorkforce',
-      sorter: (a: any, b: any) => a.requiredWorkforce - b.requiredWorkforce,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.requiredWorkforce ?? 0) - (b.requiredWorkforce ?? 0)
+      },
       render: (text: number) => (text ? text.toFixed(2) : ''),
     },
     {
       title: 'Actual workforce',
       key: 'actualWorkforce',
       dataIndex: 'actualWorkforce',
-      sorter: (a: any, b: any) => a.actualWorkforce - b.actualWorkforce,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.actualWorkforce ?? 0) - (b.actualWorkforce ?? 0)
+      },
       render: (text: number, record: any) => {
         return record.disable ? (
           text
@@ -258,7 +276,10 @@ const RequiredWorkforceTable = ({
       title: 'Lack of workforce',
       key: 'lackWorkforce',
       dataIndex: 'lackWorkforce',
-      sorter: (a: any, b: any) => a.lackWorkforce - b.lackWorkforce,
+      sorter: (a: any, b: any) => {
+        if (a.disable || b.disable) return 0
+        return (a.lackWorkforce ?? 0) - (b.lackWorkforce ?? 0)
+      },
       render: (text: number) => (text ? text.toFixed(2) : ''),
     },
     {

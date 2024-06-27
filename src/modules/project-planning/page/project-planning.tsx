@@ -55,16 +55,16 @@ const ProjectPlanning = () => {
       projectId,
     ])
     if (projectRemaining) {
-      console.log(projectRemaining[0])
       setDataSource([
-        {
+        ...projectRemaining.map((item) => ({
           id: uuidv4(),
-          remainingTimeExpect: projectRemaining[0].timeEstimateMM,
-          dueDateExpect: projectRemaining[0].dueDate,
-          headCountExpect: projectRemaining[0].headCount,
-          remainingTimeET: projectRemaining[0].timeEstimateMM,
-          headCountET: projectRemaining[0].headCount,
-        },
+          epicName: item.epicName,
+          remainingTimeExpect: item.timeEstimateMM,
+          dueDateExpect: item.dueDate,
+          headCountExpect: item.headCount,
+          remainingTimeET: item.timeEstimateMM,
+          headCountET: item.headCount,
+        })),
       ])
     } else {
       setDataSource([
@@ -355,6 +355,13 @@ const ProjectPlanning = () => {
                   )
                 }
               >
+                <Table.ColumnGroup>
+                  <Table.Column
+                    title="Epic"
+                    dataIndex="epicName"
+                    key="epicName"
+                  ></Table.Column>
+                </Table.ColumnGroup>
                 <Table.ColumnGroup title="Expectation">
                   <Table.Column
                     title="Remaining Time"
@@ -380,10 +387,12 @@ const ProjectPlanning = () => {
                     title="Start Date"
                     dataIndex="startDateExpect"
                     key="startDateExpect"
-                    render={(text: any, record: any) => {
+                    render={(startDate: any, record: any) => {
                       return (
                         <DatePicker
-                          value={dayjs(text)}
+                          value={
+                            startDate == null ? startDate : dayjs(startDate)
+                          }
                           onChange={(value) =>
                             onChange('startDateExpect', record.id, value)
                           }
@@ -395,10 +404,10 @@ const ProjectPlanning = () => {
                     title="Due Date"
                     dataIndex="dueDateExpect"
                     key="dueDateExpect"
-                    render={(text: any, record: any) => {
+                    render={(dueDate: any, record: any) => {
                       return (
                         <DatePicker
-                          value={dayjs(text)}
+                          value={dueDate == null ? dueDate : dayjs(dueDate)}
                           onChange={(value) =>
                             onChange('dueDateExpect', record.id, value)
                           }
