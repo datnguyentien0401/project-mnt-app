@@ -82,13 +82,18 @@ const RequiredWorkforceTable = ({
       sorter: (a: any, b: any) =>
         new Date(a.rrDate).getTime() - new Date(b.rrDate).getTime(),
       render: (text: string, record: any) => {
-        return record.disable
-          ? {
-              props: {
-                colSpan: 0,
-              },
-            }
-          : text
+        return record.disable ? (
+          {
+            props: {
+              colSpan: 0,
+            },
+          }
+        ) : (
+          <DatePicker
+            value={text ? dayjs(text) : null}
+            onChange={(value) => onChange('dueDate', record.id, value)}
+          />
+        )
       },
     },
     {
@@ -177,20 +182,24 @@ const RequiredWorkforceTable = ({
                 onChange('nss', record.id, event.target.value || '')
               }
             />
-            <br />
-            <a
-              href={text}
-              style={{
-                fontSize: 12,
-                width: '200px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: 'inline-block',
-              }}
-            >
-              {text}
-            </a>
+            {text && (
+              <>
+                <br />
+                <a
+                  href={text}
+                  style={{
+                    fontSize: 12,
+                    width: '200px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: 'inline-block',
+                  }}
+                >
+                  {text}
+                </a>
+              </>
+            )}
           </>
         )
       },
@@ -218,7 +227,22 @@ const RequiredWorkforceTable = ({
         if (a.disable || b.disable) return 0
         return (a.remainingTime ?? 0) - (b.remainingTime ?? 0)
       },
-      render: (text: number) => (text ? text.toFixed(2) : ''),
+      render: (text: number, record: any) =>
+        record.disable ? (
+          text ? (
+            text.toFixed(2)
+          ) : (
+            ''
+          )
+        ) : (
+          <InputNumber
+            value={text}
+            min={0}
+            onChange={(event) =>
+              onChange('remainingTime', record.id, event ?? 0)
+            }
+          />
+        ),
     },
     {
       title: 'Buffer (%)',

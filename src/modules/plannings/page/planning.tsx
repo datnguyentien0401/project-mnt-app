@@ -214,10 +214,8 @@ const Planning = () => {
       const defaultBuffer = 0.3
       const requiredWorkforceDataNew = projectRemainingList.map((item) => {
         totalETNew += item.timeEstimateMM
-        const curDate = dayjs()
         return {
           id: uuidv4(),
-          startDate: curDate,
           dueDate: item.dueDate,
           status: item.status,
           project: item.epicName,

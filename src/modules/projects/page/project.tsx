@@ -7,12 +7,7 @@ import ProjectSearchForm from '@/modules/projects/component/project-search-form'
 import { ProjectSearchType, type ProjectStatistic } from '@/types/common'
 import ProjectChart from '@/modules/projects/component/project-chart'
 import MainLayout from '@/modules/ui/layout/main-layout'
-import {
-  getAllEpic,
-  getAllJiraProject,
-  searchJiraProject,
-  searchProject,
-} from '@/lib/api/project'
+import { getAllEpic, getAllJiraProject, searchProject } from '@/lib/api/project'
 import IssueChart from '@/modules/projects/component/issue-chart'
 
 const timeSpentChartTypes = ['totalTimeSpentMD', 'totalTimeSpentMM']
@@ -51,28 +46,27 @@ const ProjectList = () => {
   }, [])
 
   const fetchProjectStatistic = async (
-    jiraProjectIds: string[],
-    projectIds: string[],
+    pickProjectIds: string[],
     type: ProjectSearchType,
     fromDate: any,
     toDate: any,
   ) => {
     let data: { totalData: []; listData: [] } = { totalData: [], listData: [] }
-    if (projectIds && projectIds.length > 0) {
-      data = await searchProject(
-        projectIds,
-        type,
-        fromDate.format('YYYYMMDD'),
-        toDate.format('YYYYMMDD'),
-      )
-    } else if (jiraProjectIds && jiraProjectIds.length > 0) {
-      data = await searchJiraProject(
-        jiraProjectIds,
-        type,
-        fromDate.format('YYYYMMDD'),
-        toDate.format('YYYYMMDD'),
-      )
+
+    const projectIds =
+      pickProjectIds && pickProjectIds.length
+        ? pickProjectIds
+        : projectOptions.map((opt) => opt.value)
+
+    if (projectIds.length == 0) {
+      return
     }
+    data = await searchProject(
+      projectIds,
+      type,
+      fromDate.format('YYYYMMDD'),
+      toDate.format('YYYYMMDD'),
+    )
     setTableData(data.totalData)
     setChartData(data.listData)
   }
@@ -99,7 +93,6 @@ const ProjectList = () => {
     }
 
     await fetchProjectStatistic(
-      values.jiraProjectId,
       values.projectId,
       searchType,
       values.fromDate,

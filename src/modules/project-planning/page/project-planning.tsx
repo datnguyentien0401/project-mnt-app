@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Card, DatePicker, Image, InputNumber, Select, Spin, Table } from 'antd'
+import {
+  Card,
+  Col,
+  DatePicker,
+  Image,
+  InputNumber,
+  Row,
+  Select,
+  Spin,
+  Table,
+} from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs, { Dayjs } from 'dayjs'
 import MainLayout from '@/modules/ui/layout/main-layout'
@@ -120,7 +130,6 @@ const ProjectPlanning = () => {
 
     let isWarning = false
     if (!value && item.dueDateET && item.remainingTimeET && item.headCountET) {
-      console.log(3)
       item.startDateET = calculateStartOrDueDate(
         new Date(item.dueDateExpect),
         item.remainingTimeExpect / (item.headCountExpect / 20),
