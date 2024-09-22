@@ -130,41 +130,41 @@ const ProjectPlanning = () => {
 
     let isWarning = false
     if (!value && item.dueDateET && item.remainingTimeET && item.headCountET) {
-      item.startDateET = calculateStartOrDueDate(
-        new Date(item.dueDateExpect),
-        item.remainingTimeExpect / (item.headCountExpect / 20),
-        'start',
-      )
+      const end = new Date(item.dueDateExpect ?? item.dueDateET)
+      const countDate =
+        item.headCountExpect > 0
+          ? item.remainingTimeET / (item.headCountExpect / 20)
+          : 0
+      item.startDateET = calculateStartOrDueDate(end, countDate, 'start')
     } else {
       item.startDateET = value ? dayjs(value).format('YYYY-MM-DD') : ''
-      if (item.dueDateExpect && item.headCountExpect) {
-        isWarning =
-          item.startDateET !==
-          calculateStartOrDueDate(
-            new Date(item.dueDateExpect),
-            item.remainingTimeET / (item.headCountExpect / 20),
-            'start',
-          )
+      if (item.dueDateExpect && item.headCountExpect > 0) {
+        const countDate = calculateStartOrDueDate(
+          new Date(item.dueDateExpect),
+          item.remainingTimeET / (item.headCountExpect / 20),
+          'start',
+        )
+        isWarning = item.startDateET !== countDate
       }
-      if (!item.headCountExpect) {
+      if (item.headCountExpect <= 0) {
         const countWorkingday = countWorkingDays(
           new Date(value),
           new Date(item.dueDateExpect),
         )
-        item.headCountET =
-          value && countWorkingday
-            ? item.remainingTimeET / (countWorkingday / 20)
-            : 0
+        item.headCountET = 0
+        if (value && countWorkingday) {
+          item.headCountET = item.remainingTimeET / (countWorkingday / 20)
+        }
       }
       if (!item.dueDateExpect) {
-        item.dueDateET =
-          value && item.headCountExpect
-            ? calculateStartOrDueDate(
-                new Date(value),
-                (item.remainingTimeET / item.headCountExpect) * 20,
-                'due',
-              )
-            : ''
+        item.dueDateET = ''
+        if (value && item.headCountExpect > 0) {
+          calculateStartOrDueDate(
+            new Date(value),
+            (item.remainingTimeET / item.headCountExpect) * 20,
+            'due',
+          )
+        }
       }
     }
     setWarning(isWarning)
@@ -181,14 +181,15 @@ const ProjectPlanning = () => {
       item.remainingTimeET &&
       item.headCountET
     ) {
-      item.dueDateET = calculateStartOrDueDate(
-        new Date(item.startDateExpect),
-        item.remainingTimeET / (item.headCountExpect / 20),
-        'due',
-      )
+      const start = new Date(item.startDateExpect ?? item.startDateET)
+      const countDate =
+        item.headCountExpect > 0
+          ? item.remainingTimeET / (item.headCountExpect / 20)
+          : 0
+      item.dueDateET = calculateStartOrDueDate(start, countDate, 'due')
     } else {
       item.dueDateET = value ? dayjs(value).format('YYYY-MM-DD') : ''
-      if (item.startDateExpect && item.headCountExpect) {
+      if (item.startDateExpect && item.headCountExpect > 0) {
         isWarning =
           item.dueDateET !==
           calculateStartOrDueDate(
@@ -197,25 +198,25 @@ const ProjectPlanning = () => {
             'due',
           )
       }
-      if (!item.headCountExpect) {
+      if (item.headCountExpect <= 0) {
         const countWorkingday = countWorkingDays(
           new Date(item.startDateExpect),
           new Date(value),
         )
-        item.headCountET =
-          value && countWorkingday
-            ? item.remainingTimeET / (countWorkingday / 20)
-            : 0
+        item.headCountET = 0
+        if (value && countWorkingday > 0) {
+          item.headCountET = item.remainingTimeET / (countWorkingday / 20)
+        }
       }
-      if (!item.startDateET) {
-        item.startDateET =
-          value && item.headCountExpect
-            ? calculateStartOrDueDate(
-                new Date(value),
-                (item.remainingTimeET / item.headCountExpect) * 20,
-                'start',
-              )
-            : ''
+      if (!item.startDateExpect) {
+        item.startDateET = ''
+        if (value && item.headCountExpect > 0) {
+          item.startDateET = calculateStartOrDueDate(
+            new Date(value),
+            (item.remainingTimeET / item.headCountExpect) * 20,
+            'start',
+          )
+        }
       }
     }
     setWarning(isWarning)
@@ -227,42 +228,41 @@ const ProjectPlanning = () => {
 
     let isWarning = false
     if (!value && item.startDateET && item.remainingTimeET && item.dueDateET) {
+      const countDate = countWorkingDays(
+        new Date(item.startDateExpect ?? item.startDateET),
+        new Date(item.dueDateExpect ?? item.dueDateET),
+      )
       item.headCountET =
-        item.remainingTimeET /
-        (countWorkingDays(
-          new Date(item.startDateExpect),
-          new Date(item.dueDateExpect),
-        ) /
-          20)
+        countDate > 0 ? item.remainingTimeET / (countDate / 20) : 0
     } else {
       item.headCountET = value
       if (item.startDateExpect && item.dueDateExpect) {
+        const countDate = countWorkingDays(
+          new Date(item.startDateExpect ?? item.startDateET),
+          new Date(item.dueDateExpect ?? item.dueDateET),
+        )
         isWarning =
-          value !==
-          item.remainingTimeET /
-            (countWorkingDays(
-              new Date(item.startDateExpect),
-              new Date(item.dueDateExpect),
-            ) /
-              20)
+          value !== (countDate ? item.remainingTimeET / (countDate / 20) : 0)
       }
       if (!item.dueDateExpect) {
-        item.dueDateET = value
-          ? calculateStartOrDueDate(
-              new Date(item.startDateExpect),
-              (item.remainingTimeET / value) * 20,
-              'due',
-            )
-          : ''
+        item.dueDateET =
+          value > 0
+            ? calculateStartOrDueDate(
+                new Date(item.startDateExpect ?? item.startDateET),
+                (item.remainingTimeET / value) * 20,
+                'due',
+              )
+            : ''
       }
       if (!item.startDateExpect) {
-        item.startDateET = value
-          ? calculateStartOrDueDate(
-              new Date(item.dueDateExpect),
-              (item.remainingTimeET / value) * 20,
-              'start',
-            )
-          : ''
+        item.startDateET =
+          value > 0
+            ? calculateStartOrDueDate(
+                new Date(item.dueDateExpect ?? item.dueDateET),
+                (item.remainingTimeET / value) * 20,
+                'start',
+              )
+            : ''
       }
     }
     setWarning(isWarning)
@@ -309,8 +309,8 @@ const ProjectPlanning = () => {
         if (!item.dueDateExpect) {
           handleDueDateExpect(item, null)
         }
-        if (!item.headCountExpect) {
-          handleHeadCountExpect(item, null)
+        if (item.headCountExpect <= 0) {
+          handleHeadCountExpect(item, 0)
         }
       }
       return item
