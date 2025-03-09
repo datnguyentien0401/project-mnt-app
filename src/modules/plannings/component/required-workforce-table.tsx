@@ -8,6 +8,7 @@ import {
   InputNumber,
   Row,
   Select,
+  Space,
   Table,
 } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
@@ -59,7 +60,7 @@ const RequiredWorkforceTable = ({
       key: 'tqa',
       dataIndex: 'tqa',
       sorter: (a: any, b: any) =>
-        new Date(a.TQA).getTime() - new Date(b.TQA).getTime(),
+        new Date(a.tqa).getTime() - new Date(b.tqa).getTime(),
       render: (text: any, record: any) => {
         return record.disable ? (
           {
@@ -80,7 +81,7 @@ const RequiredWorkforceTable = ({
       key: 'dueDate',
       dataIndex: 'dueDate',
       sorter: (a: any, b: any) =>
-        new Date(a.rrDate).getTime() - new Date(b.rrDate).getTime(),
+        new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
       render: (text: string, record: any) => {
         return record.disable ? (
           {
@@ -169,11 +170,16 @@ const RequiredWorkforceTable = ({
             },
           }
         ) : (
-          <>
+          <Space
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Input
               value={text}
               style={{
-                width: '200px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -189,7 +195,6 @@ const RequiredWorkforceTable = ({
                   href={text}
                   style={{
                     fontSize: 12,
-                    width: '200px',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -200,7 +205,7 @@ const RequiredWorkforceTable = ({
                 </a>
               </>
             )}
-          </>
+          </Space>
         )
       },
     },
@@ -236,7 +241,7 @@ const RequiredWorkforceTable = ({
           )
         ) : (
           <InputNumber
-            value={text}
+            value={text ? text : ''}
             min={0}
             onChange={(event) =>
               onChange('remainingTime', record.id, event ?? 0)

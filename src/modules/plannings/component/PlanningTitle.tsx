@@ -33,7 +33,7 @@ const PlanningTitle = ({
       }}
     >
       <Space className="justify-start">
-        {editNameKey != table.key && table.name}
+        {editNameKey != table.key && <div> {table.name} </div>}
         {editNameKey === table.key && (
           <Input
             defaultValue={table.name}
@@ -42,7 +42,7 @@ const PlanningTitle = ({
             }
             placeholder="Enter table name"
             style={{ width: 700 }}
-            max={100}
+            maxLength={100}
           />
         )}
         <Button

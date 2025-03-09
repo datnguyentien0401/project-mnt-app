@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
-import { Button, Card, Col, Input, Row, Space, Spin, notification } from 'antd'
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  Row,
+  Space,
+  Spin,
+  notification,
+  Form,
+} from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 import MainLayout from '@/modules/ui/layout/main-layout'
@@ -117,17 +127,25 @@ const Planning = () => {
           annualLeaveData: table.annualLeaveData,
         }
       })
-    if (saveTable.id) {
-      await updatePlanning(saveTable.id, saveTable)
-    } else {
-      await createPlanning(saveTable)
-    }
-    setEditNameKey('')
+    try {
+      if (saveTable.id) {
+        await updatePlanning(saveTable.id, saveTable)
+      } else {
+        await createPlanning(saveTable)
+      }
+      setEditNameKey('')
+      fetchData()
 
-    notification.open({
-      message: 'Planning',
-      description: 'Save table successfully',
-    })
+      notification.open({
+        message: 'Planning',
+        description: 'Save table successfully',
+      })
+    } catch (error) {
+      notification.error({
+        message: 'Planning',
+        description: 'Save table failed: ' + error,
+      })
+    }
   }
 
   const onRemoveTable = async (tableKey: string | number) => {
@@ -135,7 +153,8 @@ const Planning = () => {
     if (removedTable.id) {
       await deletePlanning(removedTable.id)
     }
-    setTableList(tableList.filter((table) => table.key !== tableKey))
+    // setTableList(tableList.filter((table) => table.key !== tableKey))
+    fetchData()
     notification.open({
       message: 'Planning',
       description: 'Remove table successfully',
@@ -174,6 +193,11 @@ const Planning = () => {
             },
           ],
           totalWorkforceData: [
+            {
+              id: uuidv4(),
+            },
+          ],
+          requiredWorkforceData: [
             {
               id: uuidv4(),
             },
@@ -299,11 +323,11 @@ const Planning = () => {
       })
 
     const totalWorkforceMDs = totals.map((item) => {
-      return { [item.key]: item.value }
+      return { [item.key]: item.value?.toFixed(1) }
     })
 
     const totalWorkforceMMs = totals.map((item) => {
-      return { [item.key]: item.value / 20 }
+      return { [item.key]: (item.value / 20)?.toFixed(1) }
     })
 
     const updatedAvailableWorkingData = data.map((item) => {
@@ -428,22 +452,26 @@ const Planning = () => {
         <Spin spinning={isFetching}>
           <Space className="w-full" style={{ marginBottom: '20px' }}>
             {showInput && (
-              <Input
-                type="text"
-                placeholder="Enter table name"
-                onChange={(event) => setTableName(event.target.value)}
-                max={100}
-                style={{ width: 700 }}
-              />
+              <Form.Item name="textInput">
+                <Input
+                  type="text"
+                  placeholder="Enter table name"
+                  onChange={(event) => setTableName(event.target.value)}
+                  maxLength={100}
+                  style={{ width: 700 }}
+                />
+              </Form.Item>
             )}
-            <Button
-              onClick={onAddTable}
-              type="primary"
-              icon={<PlusOutlined />}
-              className="align-left"
-            >
-              Add table
-            </Button>
+            <Form.Item>
+              <Button
+                onClick={onAddTable}
+                type="primary"
+                icon={<PlusOutlined />}
+                className="align-left"
+              >
+                Add table
+              </Button>
+            </Form.Item>
           </Space>
           {tableList.map((table) => (
             // eslint-disable-next-line react/jsx-key

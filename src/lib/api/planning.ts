@@ -16,20 +16,20 @@ export const getAllPlanning = async () => {
 }
 
 export const createPlanning = async (body: any) => {
-  const response = await axios.post(
-    `${baseUrl}${planningPath}`,
-    JSON.stringify(body),
-    headers,
-  )
+  const response = await axios
+    .post(`${baseUrl}${planningPath}`, JSON.stringify(body), headers)
+    .catch((error) => {
+      throw error
+    })
   return response.data
 }
 
 export const updatePlanning = async (id: number, body: any) => {
-  const response = await axios.put(
-    `${baseUrl}${planningPath}/${id}`,
-    JSON.stringify(body),
-    headers,
-  )
+  const response = await axios
+    .put(`${baseUrl}${planningPath}/${id}`, JSON.stringify(body), headers)
+    .catch((error) => {
+      throw error
+    })
   return response.data
 }
 
